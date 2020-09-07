@@ -1,0 +1,22 @@
+{
+  "name": "work",
+  "version": "1.0.0",
+  "description": "Test dir for node learning",
+  "main": "index.html",
+  "scripts": {
+    "start": "npm run lite",
+    "stop": "npm stop lite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lite": "lite-server"
+  },
+  "author": "Pascal",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "lite-server": "^2.5.4"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.12.9"
+  }
+}

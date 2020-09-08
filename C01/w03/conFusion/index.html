@@ -84,6 +84,61 @@
       </div>
     </div>
 
+    <!-- modal for form -->
+    <div id="reserveFormModal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-lg" role="content">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Reserve a Table</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body">
+            <form id="cf1">
+              <div class="form-group row">
+                <label for="numberofguests" class="col-md-2 col-form-label">Number of Guests</label>
+                <div class="col-md-10">
+                  <label class="btn">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> 1
+                  </label>
+                  <label class="btn">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> 2
+                  </label>
+                  <label class="btn">
+                    <input type="radio" name="options" id="option3" autocomplete="off" checked> 3
+                  </label>
+                  <label class="btn">
+                    <input type="radio" name="options" id="option4" autocomplete="off"> 4
+                  </label>
+                  <label class="btn">
+                    <input type="radio" name="options" id="option5" autocomplete="off"> 5
+                  </label>
+                  <label class="btn">
+                    <input type="radio" name="options" id="option6" autocomplete="off"> 6
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="dateandtime" class="col-md-2 col-form-label">Date and Time</label>
+                <div class="col-md-4">
+                  <input type="date" class="form-control" id="date" name="date" placeholder="Date">
+                </div>
+                <div class="col-md-4">
+                  <input type="time" class="form-control" id="time" name="time" placeholder="Time">
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="offset-md-2 col-md-10">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Reserve</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <header class="jumbotron">
       <div class="container">
         <div class="row row-header">
@@ -99,14 +154,13 @@
           <div class="col-sm-2 align-self-center">
             <a href="#cf1" role="button" class="btn btn-block nav-link btn-warning"
                data-toggle="tooltip" data-html="true" title="Or Call us at  <br><strong>+852 12345678</strong>"
-               data-placement="bottom"> Reserve Table</a>
+               data-placement="bottom">Reserve Table</a>
           </div>
         </div>
       </div>
     </header>
 
     <div class="container">
-
       <div class="row row-content">
         <div class="col">
           <div id="mycarousel" class="carousel slide" data-ride="carousel">
@@ -117,10 +171,8 @@
 
                 <div class="carousel-caption d-none d-md-block">
                   <h2>Uthappizza <span class="badge badge-danger">HOT</span> <span class="badge badge-pill badge-secondary">$4.99</span></h2>
-                  <p class="d-none d-sm-block">A unique combination of Indian Uthappam (pancake) and
-                    Italian pizza, topped with Cerignola olives, ripe vine
-                    cherry tomatoes, Vidalia onion, Guntur chillies and
-                    Buffalo Paneer.</p>
+                  <p class="d-none d-sm-block">A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine
+                    cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.</p>
                 </div>
               </div>
               <!-- 2 -->
@@ -155,60 +207,6 @@
               <span class="carousel-control-next-icon"></span>
             </a>
           </div>
-        </div>
-      </div>
-
-      <div class="row row-content align-items-center"> <!-- content 4th row for form -->
-        <div class="col-md-8 offset-md-2 col-12">
-          <!-- card -->
-          <div class="card">
-            <h3 class="card-header bg-warning text-white">Reserve a Table</h3>
-            <div class="card-body">
-              <!-- form -->
-              <form id="cf1">
-                <div class="form-group row">
-                  <label for="numberofguests" class="col-md-2 col-form-label">Number of Guests</label>
-                  <div class="col-md-10">
-                    <label class="btn">
-                      <input type="radio" name="options" id="option1" autocomplete="off"> 1
-                    </label>
-                    <label class="btn">
-                      <input type="radio" name="options" id="option2" autocomplete="off"> 2
-                    </label>
-                    <label class="btn">
-                      <input type="radio" name="options" id="option3" autocomplete="off"> 3
-                    </label>
-                    <label class="btn">
-                      <input type="radio" name="options" id="option4" autocomplete="off"> 4
-                    </label>
-                    <label class="btn">
-                      <input type="radio" name="options" id="option5" autocomplete="off"> 5
-                    </label>
-                    <label class="btn">
-                      <input type="radio" name="options" id="option6" autocomplete="off"> 6
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label for="dateandtime" class="col-md-2 col-form-label">Date and Time</label>
-
-                  <div class="col-md-4">
-                    <input type="date" class="form-control" id="date" name="date" placeholder="Date">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="time" class="form-control" id="time" name="time" placeholder="Time">
-                  </div>
-                </div>
-
-                <!-- reserve button -->
-                <div class="form-group row">
-                  <div class="offset-md-2 col-md-10">
-                    <button type="submit" class="btn btn-primary">Reserve</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div> <!-- end card-->
         </div>
       </div>
     </div>

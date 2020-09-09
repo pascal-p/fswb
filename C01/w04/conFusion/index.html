@@ -37,17 +37,17 @@
             <li class="nav-item"><a class="nav-link" href="./contactus.html"><span class="fa fa-address-card fa-lg"></span>Contact</a></li>
           </ul>
 
-          <!-- trigger login modal display -->
+          <!-- trigger login modal display // t1. remove data- attrs, add id -->
           <span class="navbar-text">
-            <a data-toggle="modal" data-target="#loginModal"><span class="fa fa-sign-in"></span> Login</a>
+            <a id="toggleLoginModal"><span class="fa fa-sign-in"></span> Login</a>
           </span>
         </div>
       </div>
     </nav>
 
-    <!-- modal -->
+    <!-- login modal -->
     <div id="loginModal" class="modal fade" role="dialog">
-      <div class="modal-dialog modal-lg" role="content">
+      <div class="modal-dialog modal-mg" role="content">
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
@@ -84,9 +84,9 @@
       </div>
     </div>
 
-    <!-- modal for form -->
+    <!-- form modal -->
     <div id="reserveFormModal" class="modal fade" role="dialog">
-      <div class="modal-dialog modal-lg" role="content">
+      <div class="modal-dialog modal-mg" role="content">
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
@@ -121,7 +121,7 @@
 
               <div class="form-group row">
                 <label for="section" class="col-md-2 col-form-label">Section</label>
-                <div class="btn-group btn-group-toggle col-md-10" data-toggle="buttons">
+                <div class="btn-group btn-group-toggle col-md-5" data-toggle="buttons">
                   <label class="btn btn-success focus active">
                     <input type="radio" name="options" id="optnonsmoking" autocomplete="off" checked> Non-Smoking
                   </label>
@@ -169,8 +169,8 @@
           </div>
 
           <div class="col-sm-2 align-self-center">
-            <!-- trigger reserveForm modal -->
-            <a data-toggle="modal" data-target="#reserveFormModal" class="btn btn-block btn-warning">Reserve Table</a>
+            <!-- trigger reserveForm modal // t1. remove data- attrs, add id -->
+            <a id="toggleReserveFormModal" class="btn btn-block btn-warning">Reserve Table</a>
           </div>
         </div>
       </div>
@@ -287,10 +287,10 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script>
-      $(document).ready(function(){
+      $(document).ready(function() {
         $("#mycarousel").carousel( { interval: 2000 } ); // define wait time for carousel item
 
-        $("#carouselBtn").click(function(){
+        $("#carouselBtn").click(function() {
           if ($("#carouselBtn").children("span").hasClass('fa-pause')) {
             // pause btn -> play btn
             $("#mycarousel").carousel('pause');
@@ -304,6 +304,18 @@
             $("#carouselBtn").children("span").removeClass('fa-play');
             $("#carouselBtn").children("span").addClass('fa-pause');
           }
+        });
+      });
+    </script>
+
+    <script> <!-- t2, t3 - add js code to toggle modals when related buttons are clicked -->
+      $(document).ready(function() {
+        $("#toggleLoginModal").click(function() {
+          $('#loginModal').modal('toggle');
+        });
+
+        $("#toggleReserveFormModal").click(function() {
+          $('#reserveFormModal').modal('toggle');
         });
       });
     </script>

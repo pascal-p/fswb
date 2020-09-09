@@ -149,3 +149,4 @@ node_modules/*
 
 .eslintrc
 .npmrc
+dist/*

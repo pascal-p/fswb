@@ -3,13 +3,12 @@ import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
 
 class DishDetail extends Component {
+  // stateless
+  /*
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedDish: null
-    };
   }
+  */
 
   renderDish(dish) {
     // dish always defined
@@ -33,7 +32,7 @@ class DishDetail extends Component {
       };
 
       const comment = comments.map((objCom) => {
-        const comDate = new Date(objCom.date);
+        const comDate = new Date(Date.parse(objCom.date));
 
         return(
           <li key={objCom.id}>
@@ -56,23 +55,26 @@ class DishDetail extends Component {
   }
 
   render() {
-    if (this.props.dish !== null) {
-      return (
-        <div className="row">
-          <div className="col-12 col-md-5 m-1">
-            {this.renderDish(this.props.dish)}
-          </div>
-
-          <div className="col-12 col-md-5 m-1">
-            <h4>Comments</h4>
-            {this.renderComments(this.props.dish.comments)}
-          </div>
-        </div>
+    if (!this.props.dish) {
+      // falsey: null, undefined, false, ...
+      return(
+        <div></div>
       );
     }
     else {
-      return(
-        <div></div>
+      return (
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-5 m-1">
+              {this.renderDish(this.props.dish)}
+            </div>
+
+            <div className="col-12 col-md-5 m-1">
+              <h4>Comments</h4>
+              {this.renderComments(this.props.dish.comments)}
+            </div>
+          </div>
+        </div>
       );
     }
   }

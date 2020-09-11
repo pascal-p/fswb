@@ -5,6 +5,14 @@ import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 class DishDetail extends Component {
   //stateless
 
+  componentDidMount() {
+    console.log('>>> [componentDidMount] DishDetail Component Mounted');
+  }
+
+  componentDidUpdate() {
+    console.log('>>> [componentDidUpdate] DishDetail Component Updated');
+  }
+
   renderDish(dish) {
     // dish always defined
     return(
@@ -52,11 +60,15 @@ class DishDetail extends Component {
   render() {
     if (!this.props.dish) {
       // falsey: null, undefined, false, ...
+      console.log('>> DishDetail Render Invoked with no selected dish');
+
       return(
         <div></div>
       );
     }
     else {
+      console.log('>> DishDetail Render Invoked with a selected dish: ' + this.props.dish.name);
+
       return (
         <div className="container">
           <div className="row">

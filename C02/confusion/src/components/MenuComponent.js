@@ -5,7 +5,13 @@ import { Card, CardImg, CardImgOverlay, CardTitle } from 'reactstrap';
 class Menu extends Component {
   //stateless
 
+  componentDidMount() {
+    console.log('>>> [componentDidMount] Menu Component Mounted');
+  }
+
   render() {
+    console.log('>> Menu Render Invoked');
+
     const menu = this.props.dishes.map((dish) => {
       return (
         <div className="col-12 col-md-5 m-1" key={dish.id}>

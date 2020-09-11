@@ -4,6 +4,8 @@ import './App.css';
 
 
 class App extends Component {
+  //stateless
+
   render() {
     return (
       <div className="App">

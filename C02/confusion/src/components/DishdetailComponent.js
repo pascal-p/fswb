@@ -3,12 +3,7 @@ import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
 
 class DishDetail extends Component {
-  // stateless
-  /*
-  constructor(props) {
-    super(props);
-  }
-  */
+  //stateless
 
   renderDish(dish) {
     // dish always defined

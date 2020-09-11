@@ -3,12 +3,7 @@ import { Card, CardImg, CardImgOverlay, CardTitle } from 'reactstrap';
 
 
 class Menu extends Component {
-  // stateless
-  /*
-  constructor(props) {
-    super(props);
-  }
-  */
+  //stateless
 
   render() {
     const menu = this.props.dishes.map((dish) => {

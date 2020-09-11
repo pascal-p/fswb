@@ -1,89 +1,71 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
+function RenderDish({dish}) {
+  // dish always defined
+  return(
+    <Card>
+      <CardImg top src={dish.image} alt={dish.name} />
+      <CardBody>
+        <CardTitle>{dish.name}</CardTitle>
+        <CardText>{dish.description}</CardText>
+      </CardBody>
+    </Card>
+  );
+}
 
-class DishDetail extends Component {
-  //stateless
+function RenderComments({comments}) {
+  if (comments != null) {
+    const dateOpts = {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric'
+    };
 
-  componentDidMount() {
-    console.log('>>> [componentDidMount] DishDetail Component Mounted');
-  }
+    const comment = comments.map((objCom) => {
+      const comDate = (new Date(Date.parse(objCom.date))).toLocaleDateString("en-US", dateOpts);
+      return(
+        <li key={objCom.id}>
+          <p>{objCom.comment}</p>
+          <p>-- <span>{objCom.author}</span>, <span>{comDate}</span></p>
+        </li>
+      );
+    });
 
-  componentDidUpdate() {
-    console.log('>>> [componentDidUpdate] DishDetail Component Updated');
-  }
-
-  renderDish(dish) {
-    // dish always defined
-    return(
-      <Card>
-        <CardImg top src={dish.image} alt={dish.name} />
-        <CardBody>
-          <CardTitle>{dish.name}</CardTitle>
-          <CardText>{dish.description}</CardText>
-        </CardBody>
-      </Card>
+    return (
+      <ul className="list-unstyled">
+        {comment}
+      </ul>
     );
   }
+  else
+    return(<div></div>);
+}
 
-  renderComments(comments) {
-    if (comments != null) {
-      const dateOpts = {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric'
-      };
+const DishDetail = (props) => {
+  if (!props.dish) {
+    // falsey: null, undefined, false, ...
+    console.log('>> DishDetail Render Invoked with no selected dish');
 
-      const comment = comments.map((objCom) => {
-        const comDate = new Date(Date.parse(objCom.date));
-
-        return(
-          <li key={objCom.id}>
-            <p>{objCom.comment}</p>
-            <p>-- <span>{objCom.author}</span>, <span>{comDate.toLocaleDateString("en-US", dateOpts)}</span></p>
-          </li>
-        );
-      });
-
-      return (
-        <ul className="list-unstyled">
-          {comment}
-        </ul>
-      );
-    }
-    else
-      return(
-        <div></div>
-      );
+    return(<div></div>);
   }
+  else {
+    console.log('>> DishDetail Render Invoked with a selected dish: ' + props.dish.name);
 
-  render() {
-    if (!this.props.dish) {
-      // falsey: null, undefined, false, ...
-      console.log('>> DishDetail Render Invoked with no selected dish');
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-12 col-md-5 m-1">
+            <RenderDish dish={props.dish} />
+          </div>
 
-      return(
-        <div></div>
-      );
-    }
-    else {
-      console.log('>> DishDetail Render Invoked with a selected dish: ' + this.props.dish.name);
-
-      return (
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-5 m-1">
-              {this.renderDish(this.props.dish)}
-            </div>
-
-            <div className="col-12 col-md-5 m-1">
-              <h4>Comments</h4>
-              {this.renderComments(this.props.dish.comments)}
-            </div>
+          <div className="col-12 col-md-5 m-1">
+            <h4>Comments</h4>
+            <RenderComments comments={props.dish.comments} />
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 }
 

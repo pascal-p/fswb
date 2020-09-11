@@ -19,8 +19,6 @@ function RenderMenuItem({dish}) { // was ({dish, onClick})
 }
 
 const Menu = (props) => {
-  console.log('>> Menu Render Invoked');
-
   const menu = props.dishes.map((dish) => {
     return (
       <div className="col-12 col-md-5 m-1" key={dish.id}>

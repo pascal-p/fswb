@@ -51,13 +51,9 @@ function RenderComments({comments}) {
 const DishDetail = (props) => {
   if (!props.dish) {
     // falsey: null, undefined, false, ...
-    console.log('>> DishDetail Render Invoked with no selected dish');
-
     return(<div></div>);
   }
   else {
-    console.log('>> DishDetail Render Invoked with a selected dish: ' + props.dish.name);
-
     return (
       <div className="container">
         <div className="row">

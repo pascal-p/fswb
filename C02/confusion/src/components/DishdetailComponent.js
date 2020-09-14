@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
-         Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+         Button, Modal, ModalHeader, ModalBody, Label, Row, Col } from 'reactstrap';
+import { Control, LocalForm } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
 
@@ -14,7 +15,6 @@ class CommentForm extends Component {
     };
 
     this.toggleModal = this.toggleModal.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   toggleModal() {
@@ -25,18 +25,49 @@ class CommentForm extends Component {
 
   render() {
     return(
-      <React.Fragment>
-        <div className="col-12 col-md-5 m-1">
-          <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span>Submit Comment</Button>
-        </div>
+      <div className="col-12 col-md-5 m-1">
+        <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span>Submit Comment</Button>
 
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-          <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+          <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
           <ModalBody>
+            <LocalForm onSubmit={this.handleSubmit}>
+              <Row className="form-group">
+                <Label htmlFor="rating" md={2}>Rating</Label>
+                <Col md={12}>
+                  <Control.select model=".ratingType" name="ratingType" className="form-control">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </Control.select>
+                </Col>
+              </Row>
+              <Row className="form-group">
+                <Label htmlFor="name" md={4}>Your Name</Label>
+                <Col md={12}>
+                  <Control.text model=".name" id="name" name="name" placeholder="Your Name" className="form-control" />
 
+                </Col>
+              </Row>
+              <Row className="form-group">
+                <Label htmlFor="comment" md={2}>Comment</Label>
+                <Col md={12}>
+                  <Control.textarea model=".comment" id="comment" name="comment" rows="6" className="form-control"/>
+
+                </Col>
+              </Row>
+
+              <Row className="form-group">
+                <Col md={12}>
+                  <Button type="submit" color="primary">Submit</Button>
+                </Col>
+              </Row>
+            </LocalForm>
           </ModalBody>
         </Modal>
-      </React.Fragment>
+      </div>
     );
   }
 }

@@ -59,13 +59,13 @@ class CommentForm extends Component {
                 </Col>
               </Row>
               <Row className="form-group">
-                <Label htmlFor="name" md={4}>Your Name</Label>
+                <Label htmlFor="author" md={4}>Your Name</Label>
                 <Col md={12}>
-                  <Control.text model=".name" id="name" name="name" placeholder="Your Name" className="form-control"
+                  <Control.text model=".author" id="author" name="author" placeholder="Your Name" className="form-control"
                     validators={{
                       required, minLength: minLength(3), maxLength: maxLength(15)
                     }} />
-                  <Errors className="text-danger" model=".name" show="touched"
+                  <Errors className="text-danger" model=".author" show="touched"
                     messages={{
                       required: 'Required',
                       minLength: 'Must be greater than 2 characters',
@@ -138,6 +138,7 @@ function RenderComments({comments}) {
         <ul className="list-unstyled">
           {comment}
         </ul>
+        <CommentForm />
       </React.Fragment>
     );
   }
@@ -171,7 +172,6 @@ const DishDetail = (props) => {
           </div>
           <div className="col-12 col-md-5 m-1">
             <RenderComments comments={props.comments} />
-            <CommentForm />
           </div>
         </div>
       </div>

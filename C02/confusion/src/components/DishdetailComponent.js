@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
          Button, Modal, ModalHeader, ModalBody, Label, Row, Col } from 'reactstrap';
-import { Control, LocalForm } from 'react-redux-form';
+import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
+
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => val && (val.length >= len);
 
 class CommentForm extends Component {
   constructor(props) {
@@ -15,12 +20,21 @@ class CommentForm extends Component {
     };
 
     this.toggleModal = this.toggleModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
+  }
+
+  handleSubmit(values) {
+    const state = JSON.stringify(values);
+
+    console.log('Current State is: ' + state);
+    alert('Current State is: ' + state);
+    this.toggleModal();
   }
 
   render() {
@@ -47,15 +61,30 @@ class CommentForm extends Component {
               <Row className="form-group">
                 <Label htmlFor="name" md={4}>Your Name</Label>
                 <Col md={12}>
-                  <Control.text model=".name" id="name" name="name" placeholder="Your Name" className="form-control" />
-
+                  <Control.text model=".name" id="name" name="name" placeholder="Your Name" className="form-control"
+                    validators={{
+                      required, minLength: minLength(3), maxLength: maxLength(15)
+                    }} />
+                  <Errors className="text-danger" model=".name" show="touched"
+                    messages={{
+                      required: 'Required',
+                      minLength: 'Must be greater than 2 characters',
+                      maxLength: 'Must be 15 characters or less'
+                    }} />
                 </Col>
               </Row>
               <Row className="form-group">
                 <Label htmlFor="comment" md={2}>Comment</Label>
                 <Col md={12}>
-                  <Control.textarea model=".comment" id="comment" name="comment" rows="6" className="form-control"/>
-
+                  <Control.textarea model=".comment" id="comment" name="comment" rows="6" className="form-control"
+                    validators={{
+                      required,
+                    }} />
+                  <Errors className='text-danger' model='.comment' show='touched'
+                    messages={{
+                      required: 'Comment should not be empty',
+                    }}
+                  />
                 </Col>
               </Row>
 

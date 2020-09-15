@@ -6,8 +6,7 @@ import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
 
-function RenderMenuItem({dish}) { // was ({dish, onClick})
-  //  <Card key={dish.id}>
+function RenderMenuItem({dish}) {
   return (
      <Card>
        <Link to={`/menu/${dish.id}`} >

@@ -1,9 +1,17 @@
 import * as ActionTypes from './ActionTypes';
-// import { DISHES } from '../shared/dishes';
 import { baseUrl } from '../shared/baseUrl';
 
 
-// action types:
+// a private error helper
+const errMsg = (response) => {
+  let error = new Error('Error ' + response.status + ': ' + response.statusText);
+  error.response = response;
+  return error;
+}
+
+//
+// Dishes
+//
 export const dishesLoading = () => ({
   type: ActionTypes.DISHES_LOADING
 });
@@ -17,13 +25,6 @@ export const addDishes = (dishes) => ({
   type: ActionTypes.ADD_DISHES,
   payload: dishes
 });
-
-// a private error helper
-const errMsg = (response) => {
-  let error = new Error('Error ' + response.status + ': ' + response.statusText);
-  error.response = response;
-  return error;
-}
 
 // a thunk:
 export const fetchDishes = () => (dispatch) => {
@@ -42,6 +43,10 @@ export const fetchDishes = () => (dispatch) => {
     .catch(error => dispatch(dishesFailed(error.message)));
 }
 
+//
+// Comments
+//
+// addComment (singular) used by postComment
 export const addComment = (comment) => ({
   type: ActionTypes.ADD_COMMENT,
   payload: comment
@@ -86,6 +91,7 @@ export const commentsFailed = (errmess) => ({
   payload: errmess
 });
 
+// addComments used by fetchComments
 export const addComments = (comments) => ({
   type: ActionTypes.ADD_COMMENTS,
   payload: comments
@@ -105,6 +111,9 @@ export const fetchComments = () => (dispatch) => {
     .catch(error => dispatch(commentsFailed(error.message)));
 };
 
+//
+// Promotions
+//
 export const promosLoading = () => ({
   type: ActionTypes.PROMOS_LOADING
 });
@@ -132,4 +141,36 @@ export const fetchPromos = () => (dispatch) => {
     })
     .then(response => response.json())
     .then(promos => dispatch(addPromos(promos)));
+}
+
+//
+// Leaders
+//
+export const leadersLoading = () => ({
+  type: ActionTypes.LEADERS_LOADING
+});
+
+export const leadersFailed = (errmess) => ({
+  type: ActionTypes.LEADERS_FAILED,
+  payload: errmess
+});
+
+export const addLeaders = (leaders) => ({
+  type: ActionTypes.ADD_LEADERS,
+  payload: leaders
+});
+
+export const fetchLeaders = () => (dispatch) => {
+  dispatch(leadersLoading());
+
+  return fetch(baseUrl + 'leaders')
+    .then(response => {
+      if (response.ok) { return response; }
+      else { throw errMsg(response); }
+    },
+    error => {
+      throw new Error(error.message);
+    })
+    .then(response => response.json())
+    .then(leaders => dispatch(addLeaders(leaders)));
 }

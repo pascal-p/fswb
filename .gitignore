@@ -3,7 +3,7 @@
 
 *.org
 #*.org#
-*.pdf
+>*.pdf
 *.pyc
 *.h5
 lab2/logs/*
@@ -150,3 +150,4 @@ node_modules/*
 .eslintrc
 .npmrc
 dist/*
+json-server/

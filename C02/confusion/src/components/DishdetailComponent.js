@@ -3,6 +3,8 @@ import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbIte
          Button, Modal, ModalHeader, ModalBody, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -106,13 +108,17 @@ class CommentForm extends Component {
 function RenderDish({dish}) {
   // dish always defined
   return(
-    <Card>
-      <CardImg top src={baseUrl + dish.image} alt={dish.name} />
-      <CardBody>
-        <CardTitle>{dish.name}</CardTitle>
-        <CardText>{dish.description}</CardText>
-      </CardBody>
-    </Card>
+    <FadeTransform in transformProps={{
+      exitTransform: 'scale(0.5) translateY(-50%)'
+    }}>
+      <Card>
+        <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+        <CardBody>
+          <CardTitle>{dish.name}</CardTitle>
+          <CardText>{dish.description}</CardText>
+        </CardBody>
+      </Card>
+    </FadeTransform>
   );
 }
 
@@ -127,10 +133,12 @@ function RenderComments({comments, postComment, dishId}) {
     const comment = comments.map((objCom) => {
       const comDate = (new Date(Date.parse(objCom.date))).toLocaleDateString("en-US", dateOpts);
       return(
-        <li key={objCom.id}>
-          <p>{objCom.comment}</p>
-          <p>-- <span>{objCom.author}</span>, <span>{comDate}</span></p>
-        </li>
+        <Fade in>
+          <li key={objCom.id}>
+            <p>{objCom.comment}</p>
+            <p>-- <span>{objCom.author}</span>, <span>{comDate}</span></p>
+          </li>
+        </Fade>
       );
     });
 
@@ -138,7 +146,9 @@ function RenderComments({comments, postComment, dishId}) {
       <React.Fragment>
         <h4>Comments</h4>
         <ul className="list-unstyled">
-          {comment}
+          <Stagger in>
+            {comment}
+          </Stagger>
         </ul>
         <CommentForm dishId={dishId} postComment={postComment} />
       </React.Fragment>

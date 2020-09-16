@@ -24,8 +24,7 @@ class Contact extends Component {
     this.props.resetFeedbackForm();
     console.log('2 - Reset Form');
     // post to server...
-    this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email,
-                            values.agree, values.contactType, values.message, new Date().toISOString());
+    this.props.postFeedback(...Object.values(values), new Date().toISOString());
     console.log('3 - Feedback Form posted...');
   }
 

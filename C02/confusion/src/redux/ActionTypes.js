@@ -11,7 +11,7 @@ export const PROMOS_FAILED = 'PROMOS_FAILED';
 export const ADD_PROMOS = 'ADD_PROMOS';
 
 
-// leaders
+// Task 1: leaders
 export const LEADERS_LOADING = 'LEADERS_LOADING';
 export const LEADERS_FAILED = 'LEADERS_FAILED';
 export const ADD_LEADERS = 'ADD_LEADERS';

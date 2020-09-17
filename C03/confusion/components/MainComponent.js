@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import { View, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Menu from './MenuComponent';
+import Home from './HomeComponent';
 import Dishdetail from './DishdetailComponent';
 
 
-const MenuNavigator = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const MenuNav = createStackNavigator();
 
-function MenuNavigatorScreen() {
+function MainNavigatorScreen() {
   return(
-    <MenuNavigator.Navigator initialRouteName='Menu'
+    <Drawer.Navigator initialRouteName='Home'
       screenOptions={{
         headerStyle: {
           backgroundColor: "#512DA8"
@@ -21,20 +24,71 @@ function MenuNavigatorScreen() {
           color: "#fff"
         }
       }}>
-      <MenuNavigator.Screen name="Menu" component={Menu} />
-      <MenuNavigator.Screen name="Dishdetail" component={Dishdetail} options={{ headerTitle: "Dish Detail"}} />
-    </MenuNavigator.Navigator>
+      <Drawer.Screen name="Home" component={HomeNavigatorScreen} />
+      <Drawer.Screen name="Menu" component={MenuNavigatorScreen} />
+    </Drawer.Navigator>
   );
 }
+
+function MenuNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Home'
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8"
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff"
+        }
+      }}>
+      <MenuNav.Screen name="Menu" component={Menu} />
+      <MenuNav.Screen name="Dishdetail" component={Dishdetail} options={{ headerTitle: "Dish Detail"}} />
+    </MenuNav.Navigator>
+  );
+}
+
+function HomeNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Home'
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8"
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff"
+        }
+      }}>
+      <MenuNav.Screen name="Home" component={Home} />
+    </MenuNav.Navigator>
+  );
+}
+
+/* Functional Version
+export default function Main() {
+  return (
+    <NavigationContainer>
+      <MainNavigatorScreen />
+    </NavigationContainer>
+  );
+}
+*/
 
 class Main extends Component {
   render() {
     return (
       <NavigationContainer>
-       <MenuNavigatorScreen />
+        <MainNavigatorScreen />
       </NavigationContainer>
     );
   }
 }
 
 export default Main;
+
+/*
+ Check: https://reactnavigation.org/docs/nesting-navigators/
+        https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+
+*/

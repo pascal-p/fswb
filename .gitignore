@@ -143,11 +143,22 @@ dmypy.json
 .pyre/
 
 #
-npm-debug.log
-node_modules/*
-*/node_modules
+*/*/node_modules/
+*/node_modules/
 
 .eslintrc
 .npmrc
 dist/*
 json-server/
+
+node_modules/**/*
+*/confusion/.expo/*
+*/confusion/.expo-shared/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/

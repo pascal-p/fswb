@@ -8,6 +8,7 @@ import { DISHES } from '../shared/dishes';
 class Menu extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       dishes: DISHES
     }

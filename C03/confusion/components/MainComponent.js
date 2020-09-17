@@ -6,6 +6,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Menu from './MenuComponent';
 import Home from './HomeComponent';
+import About from './AboutComponent';
+import Contact from './ContactComponent';
 import Dishdetail from './DishdetailComponent';
 
 
@@ -25,7 +27,9 @@ function MainNavigatorScreen() {
         }
       }}>
       <Drawer.Screen name="Home" component={HomeNavigatorScreen} />
+      <Drawer.Screen name="About Us" component={AboutNavigatorScreen} />
       <Drawer.Screen name="Menu" component={MenuNavigatorScreen} />
+      <Drawer.Screen name="Contact Us" component={ContactNavigatorScreen} />
     </Drawer.Navigator>
   );
 }
@@ -64,6 +68,41 @@ function HomeNavigatorScreen() {
     </MenuNav.Navigator>
   );
 }
+
+function AboutNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='About'
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8"
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff"
+        }
+      }}>
+      <MenuNav.Screen name="About" component={About} />
+    </MenuNav.Navigator>
+  );
+}
+
+function ContactNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Contact'
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8"
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff"
+        }
+      }}>
+      <MenuNav.Screen name="Contact" component={Contact} />
+    </MenuNav.Navigator>
+  );
+}
+
 
 /* Functional Version
 export default function Main() {

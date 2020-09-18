@@ -4,6 +4,7 @@ import { Card, Avatar, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
 
 
 const mapStateToProps = state => {
@@ -30,6 +31,31 @@ function History() {
 
 class About extends Component {
   render() {
+    const leaders = this.props.leaders;
+
+    if (leaders.isLoading) {
+      return(
+        <ScrollView>
+          <History />
+          <Card>
+            <Card.FeaturedTitle style={{textAlign: "center", color: "black"}}> Corporate Leadership </Card.FeaturedTitle>
+            <Loading />
+          </Card>
+        </ScrollView>
+      );
+    }
+    else if (leaders.errMess) {
+      return(
+        <ScrollView>
+          <History />
+          <Card>
+            <Card.FeaturedTitle style={{textAlign: "center", color: "black"}}> Corporate Leadership </Card.FeaturedTitle>
+            <Text>{this.props.leaders.errMess}</Text>
+          </Card>
+        </ScrollView>
+      );
+    }
+
     const renderLeader = ({item, index}) => {
       return(
         <ListItem key={index}>

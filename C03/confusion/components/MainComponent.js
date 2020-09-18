@@ -12,6 +12,7 @@ import Home from './HomeComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
 import Dishdetail from './DishdetailComponent';
+import Reservation from './ReservationComponent';
 
 
 const mapStateToProps = state => {
@@ -111,6 +112,9 @@ function MainNavigatorScreen() {
 
       <Drawer.Screen name="Contact Us" component={ContactNavigatorScreen}
         options={{ drawerIcon: ({tintColor}) => (<Icon name='address-card' type='font-awesome' size={22} color={tintColor} />) }} />
+
+      <Drawer.Screen name="Reserve Table" component={ReservationNavigatorScreen}
+        options={{ drawerIcon: ({tintColor}) => (<Icon name='cutlery' type='font-awesome' size={22} color={tintColor} />) }} />
     </Drawer.Navigator>
   );
 }
@@ -118,8 +122,8 @@ function MainNavigatorScreen() {
 function MenuNavigatorScreen() {
    return(
     <MenuNav.Navigator initialRouteName='Home' screenOptions={HeaderOptions}>
-      <MenuNav.Screen name="Menu" component={Menu} options={navFn} />
-      <MenuNav.Screen name="Dishdetail" component={Dishdetail} options={{ headerTitle: "Dish Detail"}} />
+      <MenuNav.Screen name='Menu' component={Menu} options={navFn} />
+      <MenuNav.Screen name='Dishdetail' component={Dishdetail} options={{ headerTitle: "Dish Detail"}} />
     </MenuNav.Navigator>
   );
 }
@@ -127,7 +131,7 @@ function MenuNavigatorScreen() {
 function HomeNavigatorScreen() {
    return(
     <MenuNav.Navigator initialRouteName='Home' screenOptions={HeaderOptions}>
-      <MenuNav.Screen name="Home" component={Home} options={navFn} />
+      <MenuNav.Screen name='Home' component={Home} options={navFn} />
     </MenuNav.Navigator>
   );
 }
@@ -135,7 +139,7 @@ function HomeNavigatorScreen() {
 function AboutNavigatorScreen() {
    return(
     <MenuNav.Navigator initialRouteName='About' screenOptions={HeaderOptions}>
-      <MenuNav.Screen name="About" component={About} options={navFn} />
+      <MenuNav.Screen name='About' component={About} options={navFn} />
     </MenuNav.Navigator>
   );
 }
@@ -143,7 +147,15 @@ function AboutNavigatorScreen() {
 function ContactNavigatorScreen() {
    return(
     <MenuNav.Navigator initialRouteName='Contact' screenOptions={HeaderOptions}>
-      <MenuNav.Screen name="Contact" component={Contact} options={navFn} />
+      <MenuNav.Screen name='Contact' component={Contact} options={navFn} />
+    </MenuNav.Navigator>
+  );
+}
+
+function ReservationNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Reservation' screenOptions={HeaderOptions}>
+      <MenuNav.Screen name='Reservation' component={Reservation} options={navFn} />
     </MenuNav.Navigator>
   );
 }

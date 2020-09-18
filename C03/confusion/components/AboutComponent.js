@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList } from 'react-native';
 import { Card, Avatar, ListItem } from 'react-native-elements';
+import { connect } from 'react-redux';
 
-import { LEADERS } from '../shared/leaders';
+import { baseUrl } from '../shared/baseUrl';
 
+
+const mapStateToProps = state => {
+  return {
+    leaders: state.leaders
+  }
+}
 
 function History() {
   return(
@@ -22,19 +29,11 @@ function History() {
 }
 
 class About extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      leaders: LEADERS
-    };
-  }
-
   render() {
     const renderLeader = ({item, index}) => {
       return(
         <ListItem key={index}>
-          <Avatar source={require('./images/alberto.png')} />
+          <Avatar source={{uri: baseUrl + item.image}} />
           <ListItem.Content>
             <ListItem.Title> {item.name} </ListItem.Title>
             <ListItem.Subtitle> {item.description} </ListItem.Subtitle>
@@ -50,11 +49,11 @@ class About extends Component {
         <History />
         <Card>
           <Card.FeaturedTitle style={{textAlign: "center", color: "black"}}> Corporate Leadership </Card.FeaturedTitle>
-          <FlatList data={this.state.leaders} renderItem={renderLeader} keyExtractor={item => item.id.toString()} />
+          <FlatList data={this.props.leaders.leaders} renderItem={renderLeader} keyExtractor={item => item.id.toString()} />
         </Card>
       </View>
     );
   }
 }
 
-export default About;
+export default connect(mapStateToProps)(About);

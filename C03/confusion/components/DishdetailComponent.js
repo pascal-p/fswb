@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
 
-import { DISHES } from '../shared/dishes';
-import { COMMENTS } from '../shared/comments';
+import { baseUrl } from '../shared/baseUrl';
 
+
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments
+  }
+}
 
 function RenderComments(props) {
   const comments = props.comments;
@@ -35,7 +42,7 @@ function RenderDish(props) {
       <Card>
         <Card.Title>{dish.name}</Card.Title>
         <Card.Divider/>
-        <Card.Image source={require('./images/uthappizza.png')}>
+        <Card.Image source={{uri: baseUrl + dish.image}}>
         </Card.Image>
         <Text style={{margin: 10}}>
           {dish.description}
@@ -56,8 +63,6 @@ class Dishdetail extends Component {
     super(props);
 
     this.state = {
-      dishes: DISHES,
-      comments: COMMENTS,
       favorites: []
     };
   }
@@ -71,15 +76,15 @@ class Dishdetail extends Component {
 
     return(
       <View>
-        <RenderDish dish={this.state.dishes[+dishId]} favorite={this.state.favorites.some(el => el === dishId)}
+        <RenderDish dish={this.props.dishes.dishes[+dishId]} favorite={this.state.favorites.some(el => el === dishId)}
           onPress={() => this.markFavorite(dishId)} />
-        <RenderComments comments={this.state.comments.filter((comment) => comment.dishId === dishId)} />
+        <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
       </View>
     );
   }
 }
 
-export default Dishdetail;
+export default connect(mapStateToProps)(Dishdetail);
 
 /*
  * Using VirtualView leads to 'VirtualizedLists should never be nested inside plain ScrollViews' Warning

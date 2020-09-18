@@ -1,11 +1,35 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-import { Card } from 'react-native-elements';
-import { DISHES } from '../shared/dishes';
+import { Text, View, FlatList } from 'react-native';
+import { Card, Icon } from 'react-native-elements';
 
+import { DISHES } from '../shared/dishes';
+import { COMMENTS } from '../shared/comments';
+
+
+function RenderComments(props) {
+  const comments = props.comments;
+
+  const renderCommentItem = ({item, index}) => {
+    return (
+      <View key={index} style={{margin: 10}}>
+        <Text style={{fontSize: 14}}>{item.comment}</Text>
+        <Text style={{fontSize: 12}}>{item.rating} Stars</Text>
+        <Text style={{fontSize: 12}}>{'-- ' + item.author + ', ' + item.date} </Text>
+      </View>
+    );
+  };
+
+  return(
+    <Card>
+      <Card.Title> Comments </Card.Title>
+      <FlatList data={comments} renderItem={renderCommentItem} keyExtractor={item => item.id.toString()} />
+    </Card>
+  );
+}
 
 function RenderDish(props) {
   const dish = props.dish;
+
   if (dish != null) {
     return(
       <Card>
@@ -16,6 +40,9 @@ function RenderDish(props) {
         <Text style={{margin: 10}}>
           {dish.description}
         </Text>
+        <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o'}
+          type='font-awesome' color='#f50'
+          onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
       </Card>
     );
   }
@@ -29,16 +56,34 @@ class Dishdetail extends Component {
     super(props);
 
     this.state = {
-      dishes: DISHES
+      dishes: DISHES,
+      comments: COMMENTS,
+      favorites: []
     };
+  }
+
+  markFavorite(dishId) {
+    this.setState({favorites: this.state.favorites.concat(dishId)});
   }
 
   render() {
     const dishId = this.props.route.params.dishId;
+
     return(
-      <RenderDish dish={this.state.dishes[+dishId]} />
+      <View>
+        <RenderDish dish={this.state.dishes[+dishId]} favorite={this.state.favorites.some(el => el === dishId)}
+          onPress={() => this.markFavorite(dishId)} />
+        <RenderComments comments={this.state.comments.filter((comment) => comment.dishId === dishId)} />
+      </View>
     );
   }
 }
 
 export default Dishdetail;
+
+/*
+ * Using VirtualView leads to 'VirtualizedLists should never be nested inside plain ScrollViews' Warning
+ * cf. https://nyxo.app/fixing-virtualizedlists-should-never-be-nested-inside-plain-scrollviews
+ *
+ * Reverting to View...
+ */

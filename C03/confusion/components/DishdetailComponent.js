@@ -5,7 +5,7 @@ import { Card, Icon, Rating, Input, } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 
 
 const mapStateToProps = state => {
@@ -17,7 +17,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  postFavorite: (dishId) => dispatch(postFavorite(dishId))
+  postFavorite: (dishId) => dispatch(postFavorite(dishId)),
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
 })
 
 function RenderComments(props) {
@@ -93,11 +94,11 @@ class Dishdetail extends Component {
     this.setState({showModal: !this.state.showModal});
   }
 
-  handleCommentSubmit() {
-    console.log(JSON.stringify(this.state));
+  handleCommentSubmit(dishId) {
+    console.log(">> state: " + JSON.stringify(this.state));
+    this.props.postComment(dishId, this.state.rating,
+                           this.state.author, this.state.comment);
     this.toggleModal();
-
-    // TODO... task 2
   }
 
   render() {
@@ -106,7 +107,7 @@ class Dishdetail extends Component {
     return(
       <View>
         <RenderDish dish={this.props.dishes.dishes[+dishId]} favorite={this.props.favorites.some(el => el === dishId)}
-          toggleModal={ () => this.toggleModal() } onPress={() => this.markFavorite(dishId)} />
+          toggleModal={() => this.toggleModal()} onPress={() => this.markFavorite(dishId)} />
 
         <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
 
@@ -133,7 +134,7 @@ class Dishdetail extends Component {
             </View>
 
             <View style={styles.btnRow}>
-              <Button onPress={() => { this.handleCommentSubmit() }} title="Submit" color="#512DA8"
+              <Button onPress={() => { this.handleCommentSubmit(dishId) }} title="Submit" color="#512DA8"
                 accessibilityLabel="Learn more about this purple button" />
             </View>
 

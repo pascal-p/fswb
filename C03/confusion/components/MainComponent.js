@@ -13,6 +13,7 @@ import About from './AboutComponent';
 import Contact from './ContactComponent';
 import Dishdetail from './DishdetailComponent';
 import Reservation from './ReservationComponent';
+import Favorite from './FavoriteComponent';
 
 
 const mapStateToProps = state => {
@@ -92,12 +93,9 @@ const CustomDrawerContentComponent = (props) => (
 );
 
 function MainNavigatorScreen() {
-  // const tintCol = '#007aff';
-
   return(
     <Drawer.Navigator initialRouteName='Home' drawerStyle={{ backgroundColor:'#D1C4E9' }}
       drawerContentOptions={{
-        // activeTintColor: '#e91e63',
         backgroundColor:'#d1c4e9'
       }} drawerContent={ props => <CustomDrawerContentComponent {...props} /> }>
 
@@ -112,6 +110,9 @@ function MainNavigatorScreen() {
 
       <Drawer.Screen name="Contact Us" component={ContactNavigatorScreen}
         options={{ drawerIcon: ({tintColor}) => (<Icon name='address-card' type='font-awesome' size={22} color={tintColor} />) }} />
+
+      <Drawer.Screen name="My Favorite" component={FavoriteNavigatorScreen}
+        options={{ drawerIcon: ({tintColor}) => (<Icon name='heart' type='font-awesome' size={22} color={tintColor} />) }} />
 
       <Drawer.Screen name="Reserve Table" component={ReservationNavigatorScreen}
         options={{ drawerIcon: ({tintColor}) => (<Icon name='cutlery' type='font-awesome' size={22} color={tintColor} />) }} />
@@ -159,6 +160,15 @@ function ReservationNavigatorScreen() {
     </MenuNav.Navigator>
   );
 }
+
+function FavoriteNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Favorite' screenOptions={HeaderOptions}>
+      <MenuNav.Screen name='Favorite' component={Favorite} options={navFn} />
+    </MenuNav.Navigator>
+  );
+}
+
 
 
 /* Functional Version

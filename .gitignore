@@ -149,7 +149,8 @@ dmypy.json
 .eslintrc
 .npmrc
 dist/*
-json-server/
+**/json-server/
+C0*/json-server
 
 node_modules/**/*
 */confusion/.expo/*

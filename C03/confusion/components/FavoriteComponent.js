@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity,
-         Animated } from 'react-native';
+         Animated, Alert } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -36,11 +36,21 @@ class Favorites extends Component {
       return(
         <React.Fragment>
           <TouchableOpacity onPress={() => {
-              console.log("About to delete favorite dish: " + item.id);
-              this.props.deleteFavorite(item.id)
-            }
-          }>
-
+            Alert.alert('Delete Favorite?',
+                        'Are you sure to delete your Favorite Dish' + item.name + '?',
+                        [{
+                          text: 'Cancel',
+                          onPress: () => console.log(item.name + 'Not Deleted'),
+                          style: ' cancel'
+                         },
+                         {
+                           text: 'OK',
+                           onPress: () => this.props.deleteFavorite(item.id)
+                         }
+                        ],
+                        { cancelable: false }
+                       )
+          }}>
             <View style={{flex: 1, backgroundColor: '#dd2c00', justifyContent: 'center', alignItems: 'flex-end'}}>
               <Animated.Text style={{color: '#ffffff', paddingHorizontal: 20, fontWeight:'bold', transform: [{scale}]}}>
                 Delete

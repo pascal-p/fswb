@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList } from 'react-native';
-import { Card, Icon } from 'react-native-elements';
+import { Text, View, ScrollView, FlatList,
+         StyleSheet, Modal, Button } from 'react-native';
+import { Card, Icon, Rating, Input, } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { baseUrl } from '../shared/baseUrl';
@@ -53,9 +54,15 @@ function RenderDish(props) {
         <Text style={{margin: 10}}>
           {dish.description}
         </Text>
-        <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o'}
-          type='font-awesome' color='#f50'
-          onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
+
+        <View style={styles.formRow}>
+          <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o'}
+            type='font-awesome' color='#f50'
+            onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
+
+          <Icon raised reverse name='pencil' type='font-awesome' color='#512DA8'
+            onPress={() => props.toggleModal() } />
+        </View>
       </Card>
     );
   }
@@ -69,12 +76,28 @@ class Dishdetail extends Component {
     super(props);
 
     this.state = {
-      favorites: []
+      favorites: [],
+
+      showModal: false,
+      rating: 0,
+      author: '',
+      comment: ''
     };
   }
 
   markFavorite(dishId) {
     this.props.postFavorite(dishId);
+  }
+
+  toggleModal() {
+    this.setState({showModal: !this.state.showModal});
+  }
+
+  handleCommentSubmit() {
+    console.log(JSON.stringify(this.state));
+    this.toggleModal();
+
+    // TODO... task 2
   }
 
   render() {
@@ -83,14 +106,82 @@ class Dishdetail extends Component {
     return(
       <View>
         <RenderDish dish={this.props.dishes.dishes[+dishId]} favorite={this.props.favorites.some(el => el === dishId)}
-          onPress={() => this.markFavorite(dishId)} />
+          toggleModal={ () => this.toggleModal() } onPress={() => this.markFavorite(dishId)} />
+
         <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
+
+        {/* the modal containing the 'form' */}
+        <Modal animationType={"slide"} transparent={false}
+          visible={this.state.showModal}
+          onDismiss={ () => this.toggleModal() }
+          onRequestClose={ () => this.toggleModal() }>
+
+          <ScrollView>
+            <View style={styles.formRow}>
+              <Rating type='star' ratingCount={5} imageSize={20} showRating startingValue={1}
+                onFinishRating={rating => this.setState({rating: rating})} />
+            </View>
+
+            <View style={styles.formRow}>
+              <Input placeholder='Author' leftIcon={<Icon name='user-o' type='font-awesome' color='black' />}
+                onChangeText={value => this.setState({ author: value })} />
+            </View>
+
+            <View style={styles.formRow}>
+              <Input placeholder='Comment' leftIcon={<Icon name='comment-o' type='font-awesome' color='black' />}
+                onChangeText={value => this.setState({ comment: value })} />
+            </View>
+
+            <View style={styles.btnRow}>
+              <Button onPress={() => { this.handleCommentSubmit() }} title="Submit" color="#512DA8"
+                accessibilityLabel="Learn more about this purple button" />
+            </View>
+
+            <View style={styles.btnRow}>
+              <Button title="Cancel" type="clear" type="solid" color="gray" />
+            </View>
+
+          </ScrollView>
+      </Modal>
       </View>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
+const styles = StyleSheet.create({
+  btnRow: {
+    alignSelf: 'stretch',
+    margin: 5
+  },
+  formRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    margin: 20
+  },
+  button: {
+    flexDirection: 'row',
+  },
+  modal: {
+    justifyContent: 'center',
+    margin: 20
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    backgroundColor: '#512DA8',
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: 20
+  },
+  modalText: {
+    fontSize: 18,
+    margin: 10
+  }
+});
+
+  export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
 
 /*
  * Using VirtualView leads to 'VirtualizedLists should never be nested inside plain ScrollViews' Warning

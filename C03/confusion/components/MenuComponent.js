@@ -17,6 +17,8 @@ const mapStateToProps = state => {
 class Menu extends Component {
   render() {
     const dishes = this.props.dishes;
+    const { navigate } = this.props.navigation;
+
     if (dishes.isLoading) {
       return(<Loading />);
     }
@@ -31,15 +33,13 @@ class Menu extends Component {
     const renderMenuItem = ({item, index}) => {
       return(
         <Animatable.View animation="fadeInRightBig" duration={2000}>
-          <Tile key={index} onPress={ () => navigate('Dishdetail', { dishId: item.id }) }
+          <Tile key={index} onPress={() => navigate('Dishdetail', { dishId: item.id })}
             title={item.name}
             imageSrc={{ uri: baseUrl + item.image}}
             caption={item.description} featured />
         </Animatable.View>
       );
     }
-
-    const { navigate } = this.props.navigation;
 
     return (
       <FlatList data={this.props.dishes.dishes} renderItem={renderMenuItem}

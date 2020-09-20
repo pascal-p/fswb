@@ -25,6 +25,7 @@ const mapDispatchToProps = dispatch => ({
 class Favorites extends Component {
 
   render() {
+    const dishes = this.props.dishes;
     const { navigate } = this.props.navigation;
 
     const rightBtn = (progress, dragX, item) => {
@@ -66,7 +67,8 @@ class Favorites extends Component {
       return (
         <Swipeable renderRightActions={(progress, dragX) => rightBtn(progress, dragX, item)}>
           <Animatable.View animation="fadeInRightBig" duration={2000}>
-            <ListItem key={index} onPress={() => navigate('Dishdetail', { dishId: item.id })}>
+          <ListItem key={index} onPress={() => navigate('Dishdetail',
+                                                        {screen: 'Dishdetail', dishId: item.id})}>
               <Avatar source={{uri: baseUrl + item.image}} />
               <ListItem.Content>
                 <ListItem.Title> {item.name} </ListItem.Title>
@@ -78,18 +80,18 @@ class Favorites extends Component {
       );
     };
 
-    if (this.props.dishes.isLoading) {
+    if (dishes.isLoading) {
       return(<Loading />);
     }
-    else if (this.props.dishes.errMess) {
+    else if (dishes.errMess) {
       return(
         <View>
-          <Text>{this.props.dishes.errMess}</Text>
+          <Text>{dishes.errMess}</Text>
         </View>
       );
     }
     return (
-      <FlatList data={this.props.dishes.dishes.filter(dish => this.props.favorites.some(el => el === dish.id))}
+      <FlatList data={dishes.dishes.filter(dish => this.props.favorites.some(el => el === dish.id))}
         renderItem={renderMenuItem} keyExtractor={item => item.id.toString()} />
     );
   }

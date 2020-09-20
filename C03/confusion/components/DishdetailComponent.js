@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import { Text, View, ScrollView, FlatList,
          StyleSheet, Modal, Button,
          Alert, PanResponder } from 'react-native';
@@ -49,10 +49,14 @@ function RenderComments(props) {
 function RenderDish(props) {
   const dish = props.dish;
 
+  const animRef = useRef();
+
   const recognizeDrag = ({ _moveX, _moveY, dx, _dy }) => dx < -200;
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: (_e, _gestureState) => { return true; },
+    onPanResponderGrant: () => { animRef.current.rubberBand(1000)
+                                 .then(endState => console.log(endState.finished ? 'finished' : 'cancelled')); },
     onPanResponderEnd: (_e, gestureState) => {
       console.log("pan responder end", gestureState);
       if (recognizeDrag(gestureState)) {
@@ -72,7 +76,7 @@ function RenderDish(props) {
 
   if (dish != null) {
     return(
-        <Animatable.View animation="fadeInDown" duration={2000} delay={1000} {...panResponder.panHandlers}>
+      <Animatable.View animation="fadeInDown" duration={2000} delay={1000} ref={animRef} {...panResponder.panHandlers}>
         <Card>
           <Card.Title>{dish.name}</Card.Title>
           <Card.Divider/>

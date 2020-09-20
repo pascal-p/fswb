@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, FlatList,
          StyleSheet, Modal, Button } from 'react-native';
 import { Card, Icon, Rating, Input, } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 
 import { baseUrl } from '../shared/baseUrl';
@@ -26,7 +27,7 @@ function RenderComments(props) {
 
   const renderCommentItem = ({item, index}) => {
     return (
-        <View key={index} style={{margin: 10}}>
+      <View key={index} style={{margin: 10}}>
         <Text style={{fontSize: 14}}>{item.comment}</Text>
         <Rating style={{marginRight: 'auto'}} imageSize={12} readonly startingValue={item.rating} />
         <Text style={{fontSize: 12}}>{'-- ' + item.author + ', ' + item.date} </Text>
@@ -35,10 +36,12 @@ function RenderComments(props) {
   };
 
   return(
-    <Card>
-      <Card.Title> Comments </Card.Title>
-      <FlatList data={comments} renderItem={renderCommentItem} keyExtractor={item => item.id.toString()} />
-    </Card>
+    <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>
+      <Card>
+        <Card.Title> Comments </Card.Title>
+        <FlatList data={comments} renderItem={renderCommentItem} keyExtractor={item => item.id.toString()} />
+      </Card>
+    </Animatable.View>
   );
 }
 
@@ -47,24 +50,24 @@ function RenderDish(props) {
 
   if (dish != null) {
     return(
-      <Card>
-        <Card.Title>{dish.name}</Card.Title>
-        <Card.Divider/>
-        <Card.Image source={{uri: baseUrl + dish.image}}>
-        </Card.Image>
-        <Text style={{margin: 10}}>
-          {dish.description}
-        </Text>
+      <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+        <Card>
+          <Card.Title>{dish.name}</Card.Title>
+          <Card.Divider/>
+          <Card.Image source={{uri: baseUrl + dish.image}}>
+          </Card.Image>
+          <Text style={{margin: 10}}> {dish.description} </Text>
 
-        <View style={styles.formRow}>
-          <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o'}
-            type='font-awesome' color='#f50'
-            onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
+          <View style={styles.formRow}>
+            <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o'}
+              type='font-awesome' color='#f50'
+              onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
 
-          <Icon raised reverse name='pencil' type='font-awesome' color='#512DA8'
-            onPress={() => props.toggleModal() } />
-        </View>
-      </Card>
+            <Icon raised reverse name='pencil' type='font-awesome' color='#512DA8'
+              onPress={() => props.toggleModal() } />
+          </View>
+        </Card>
+      </Animatable.View>
     );
   }
   else {

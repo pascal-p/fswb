@@ -4,6 +4,7 @@ import { View, Text, FlatList, TouchableOpacity,
 import { Avatar, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import * as Animatable from 'react-native-animatable';
 
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
@@ -64,14 +65,15 @@ class Favorites extends Component {
     const renderMenuItem = ({item, index}) => {
       return (
         <Swipeable renderRightActions={(progress, dragX) => rightBtn(progress, dragX, item)}>
-          <ListItem key={index} onPress={() => navigate('Dishdetail', { dishId: item.id })}>
-            <Avatar source={{uri: baseUrl + item.image}} />
-            <ListItem.Content>
-              <ListItem.Title> {item.name} </ListItem.Title>
-              <ListItem.Subtitle> {item.description} </ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-
+          <Animatable.View animation="fadeInRightBig" duration={2000}>
+            <ListItem key={index} onPress={() => navigate('Dishdetail', { dishId: item.id })}>
+              <Avatar source={{uri: baseUrl + item.image}} />
+              <ListItem.Content>
+                <ListItem.Title> {item.name} </ListItem.Title>
+                <ListItem.Subtitle> {item.description} </ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          </Animatable.View>
         </Swipeable>
       );
     };

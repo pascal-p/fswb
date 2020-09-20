@@ -6,6 +6,8 @@ import { Icon } from 'react-native-elements';
 import DatePicker from '@react-native-community/datetimepicker'
 import Moment from 'moment';
 import * as Animatable from 'react-native-animatable';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 
 class Reservation extends Component {
@@ -18,13 +20,8 @@ class Reservation extends Component {
       date: new Date().toISOString(),
       show: false,
       mode: 'date'
-      // showModal: false
     }
   }
-
-  static navigationOptions = {
-    title: 'Reserve Table',
-  };
 
   resetForm() {  // reset the form by mutating the state back to original
     this.setState({
@@ -32,7 +29,36 @@ class Reservation extends Component {
       smoking: false,
       date: new Date().toISOString(),
       show: false
-      // showModal: false
+    });
+  }
+
+  async obtainNotificationPermission() {
+    let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+
+    if (permission.status !== 'granted') {
+      permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+
+      if (permission.status !== 'granted') {
+        Alert.alert('Permission not granted to show notifications');
+      }
+    }
+    return permission;
+  }
+
+  async presentLocalNotification(date) {
+    await this.obtainNotificationPermission();
+
+    Notifications.presentLocalNotificationAsync({
+      title: 'Your Reservation',
+      body: 'Reservation for '+ date + ' requested',
+      ios: {
+        sound: true
+      },
+      android: {
+        sound: true,
+        vibrate: true,
+        color: '#512DA8'
+      }
     });
   }
 
@@ -123,7 +149,11 @@ class Reservation extends Component {
           </View>
 
           <View style={styles.formRow}>
-            <Button onPress={() => { this.handleReservation() }}
+            <Button onPress={() =>
+                             {
+                               this.presentLocalNotification(this.state.date);
+                               this.handleReservation()
+                             }}
               title="Reserve"
               color="#512DA8" />
           </View>

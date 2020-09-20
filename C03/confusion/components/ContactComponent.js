@@ -22,7 +22,3 @@ export default function Contact() {
     </View>
   );
 }
-
-Contact.navigationOptions = {
-  title: "Contact Us"
-};

@@ -14,6 +14,7 @@ import Contact from './ContactComponent';
 import Dishdetail from './DishdetailComponent';
 import Reservation from './ReservationComponent';
 import Favorite from './FavoriteComponent';
+import Login from './LoginComponent';
 
 
 const mapStateToProps = state => {
@@ -99,6 +100,9 @@ function MainNavigatorScreen() {
         backgroundColor:'#d1c4e9'
       }} drawerContent={ props => <CustomDrawerContentComponent {...props} /> }>
 
+      <Drawer.Screen name="Login" component={LoginNavigatorScreen}
+        options={{ drawerIcon: ({tintColor}) => (<Icon name='sign-in' type='font-awesome' size={24} color={tintColor} />) }} />
+      
       <Drawer.Screen name="Home" component={HomeNavigatorScreen}
         options={{ drawerIcon: ({tintColor}) => (<Icon name='home' type='font-awesome' size={24} color={tintColor} />) }} />
 
@@ -137,6 +141,14 @@ function HomeNavigatorScreen() {
   );
 }
 
+function LoginNavigatorScreen() {
+   return(
+    <MenuNav.Navigator initialRouteName='Login' screenOptions={HeaderOptions}>
+      <MenuNav.Screen name='Login' component={Login} options={navFn} />
+    </MenuNav.Navigator>
+  );
+}
+
 function AboutNavigatorScreen() {
    return(
     <MenuNav.Navigator initialRouteName='About' screenOptions={HeaderOptions}>
@@ -168,8 +180,6 @@ function FavoriteNavigatorScreen() {
     </MenuNav.Navigator>
   );
 }
-
-
 
 /* Functional Version
 export default function Main() {

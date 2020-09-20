@@ -73,7 +73,6 @@ class Home extends Component {
     ).start(() => this.animate())
   }
 
-
   render() {
     const xpos1 = this.animatedValue.interpolate({
       inputRange: [0, 1, 3, 5, 8],

@@ -35,7 +35,6 @@ function History() {
 class About extends Component {
   render() {
     const leaders = this.props.leaders;
-    console.log(">>>> leaders: isLoading? " + leaders.isLoading + " / errMess? " + leaders.errMess);
 
     if (leaders.isLoading) {
       return(

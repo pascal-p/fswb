@@ -103,7 +103,6 @@ class LoginTab extends Component {
 }
 
 class RegisterTab extends Component {
-
   constructor(props) {
     super(props);
 
@@ -130,7 +129,26 @@ class RegisterTab extends Component {
 
       if (!capturedImage.cancelled) {
         console.log("Captured image: " + capturedImage.uri);
-        this.processImage(capturedImage.uri); // this.setState({imageUrl: capturedImage.uri });
+        this.processImage(capturedImage.uri);
+      }
+    }
+  }
+
+  getImageFromGallery = async () => {
+    const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+    const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+    if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
+      let imageFromGallery = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!imageFromGallery.cancelled) {
+        console.log("Gallery image: " + imageFromGallery.uri);
+        this.processImage(imageFromGallery.uri);
       }
     }
   }
@@ -172,6 +190,7 @@ class RegisterTab extends Component {
           <View style={styles.imageContainer}>
             <Image source={{uri: this.state.imageUrl}} loadingIndicatorSource={require('./images/logo.png')} style={styles.image} />
             <Button title="Camera" onPress={this.getImageFromCamera} />
+            <Button title="Gallery" onPress={this.getImageFromGallery} />
           </View>
 
           <Input placeholder="Username" leftIcon={{ type: 'font-awesome', name: 'user-o' }}
@@ -240,6 +259,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent:'space-around',
     margin: 20
   },
   image: {

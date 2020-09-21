@@ -1,10 +1,11 @@
 {
   "expo": {
+    "sdkVersion": "38.0.0",
     "name": "confusion",
     "slug": "confusion",
+    "icon": "./icon.png",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,7 +18,11 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "net.food.confusion.confusion",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "net.food.confusion.confusion"
     },
     "web": {
       "favicon": "./assets/favicon.png"

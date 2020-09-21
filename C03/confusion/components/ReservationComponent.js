@@ -8,6 +8,7 @@ import Moment from 'moment';
 import * as Animatable from 'react-native-animatable';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
+import * as Calendar from 'expo-calendar';
 
 
 class Reservation extends Component {
@@ -64,24 +65,81 @@ class Reservation extends Component {
 
   handleReservation() {
     console.log(JSON.stringify(this.state));
-    return(
-      Alert.alert(
-        'Your Reservation OK?',
-        `Number of Guests: ${this.state.guests}\nSmoking? ${this.state.smoking}\nDate and Time: ${this.state.date}`,
-        [
-          {
-            text: 'CANCEL',
-            onPress: () => this.resetForm(),
-            style: ' cancel'
-          },
-          {
+
+    Alert.alert(
+      'Your Reservation OK?',
+      `Number of Guests: ${this.state.guests}\nSmoking? ${this.state.smoking}\nDate and Time: ${this.state.date}`,
+      [
+        {
+          text: 'CANCEL',
+          onPress: () => this.resetForm(),
+          style: ' cancel'
+        },
+        {
             text: 'OK',
-            onPress: () => this.resetForm()
-          }
-        ],
-        { cancelable: false }
-      )
+          onPress: () => this.resetForm()
+        }
+      ],
+      { cancelable: false }
     );
+
+    if (this.obtainCalendarPermission()) {
+      console.log("Calendar Pemission granted...");
+      this.addReservationToCalendar(this.state.date);
+    }
+    else {
+      console.log("Calendar Pemission denied...");
+    }
+  }
+
+  obtainCalendarPermission = async () => {
+    const calPerm = await Calendar.requestCalendarPermissionsAsync(); // Permission.CALENDAR;
+    return calPerm === 'granted';
+  }
+
+  getDefaultCalendarSrc = async() => {
+    const calendars = await Calendar.getCalendarsAsync();
+    const defaultCalendars = calendars.filter(each => each.source.name === 'My calendar');
+
+    return defaultCalendars[0].source;
+  }
+
+  addReservationToCalendar = async (date) => {
+    const datems = Date.parse(date);
+    const startDate = new Date(datems);
+    const endDate = new Date(datems + 2 * 3600 * 1000);
+
+    // Android only...
+    const defaultCalendarSrc = await this.getDefaultCalendarSrc();
+
+    if (defaultCalendarSrc !== undefined) {
+      const details = {
+        title: 'Con Fusion Table Reservation',
+        source: defaultCalendarSrc,
+        name: 'internalCalendarName',
+        color: 'lightgreen',
+        entityType: Calendar.EntityTypes.EVENT,
+        sourceId: defaultCalendarSrc.id,
+        ownerAccount: 'personal',
+        accessLevel: Calendar.CalendarAccessLevel.OWNER,
+      }
+
+      const calendarId = await Calendar.createCalendarAsync(details);
+
+      const newCalEventID = await Calendar.createEventAsync(calendarId, {
+        title: 'Con Fusion Table Reservation',
+        startDate: startDate,
+        endDate: endDate,
+        timeZone: 'Asia/Hong_Kong',
+        location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong',
+        accessLevel: Calendar.CalendarAccessLevel.OWNER,
+      });
+
+      console.log("Calendar Event added, id: " + newCalEventID);
+    }
+    else {
+      console.log("Not yet managed...")
+    }
   }
 
   render() {

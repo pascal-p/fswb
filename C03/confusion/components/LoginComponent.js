@@ -8,6 +8,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import { Camera } from 'expo-camera';
+import { Asset } from 'expo-asset';
 
 
 const tabNavigator = createBottomTabNavigator();
@@ -128,9 +130,22 @@ class RegisterTab extends Component {
 
       if (!capturedImage.cancelled) {
         console.log("Captured image: " + capturedImage.uri);
-        this.setState({imageUrl: capturedImage.uri });
+        this.processImage(capturedImage.uri); // this.setState({imageUrl: capturedImage.uri });
       }
     }
+  }
+
+  processImage = async (imageUri) => {
+    let processedImage = await ImageManipulator.manipulateAsync(
+      imageUri,
+      [
+        { resize: { width: 600 } }
+            ],
+      { format: 'png' }
+    );
+    console.log(processedImage);
+
+    this.setState({imageUrl: processedImage.uri});
   }
 
   static navigationOptions = {

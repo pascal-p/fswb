@@ -1,34 +1,58 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const dbOper = require('./operations');
 
 const url = 'mongodb://localhost:27017/';
 const dbname = 'conFusion';
 
-MongoClient.connect(url, { useUnifiedTopology: true },
-                    (err, cli) => {
-  assert.equal(err, null);
+MongoClient.connect(
+  url,
+  { useUnifiedTopology: true },
+  (err, cli) => {
+    assert.equal(err, null);
 
-  console.log("DEBUG: connected to MongoSB server");
+    console.log("DEBUG: connected to MongoSB server");
 
-  const db = cli.db(dbname);
-  const coll = db.collection("dishes");
+    const db = cli.db(dbname);
 
-  coll.insertOne(
-    {"name": "Uthapizza", "descritpion": "test"},
-    (err, res) => {
-      assert.equal(err, null);
+    // Nested structure of callbacks...
 
-      console.log("DEBUG: After Insert:\n", res.ops);
+    // Create
+    dbOper.insertDocument(
+      db,
+      { name: "Vadonut", description: "Test"},
+      "dishes", (res) => {
+        console.log(`Insert Document:\n ${res.ops}`);
 
-      coll.find({}).toArray((err, docs) => {
-        assert.equal(err, null);
+        // Read
+        dbOper.findDocuments(db, "dishes", (docs) => {
+          console.log("Found Documents:\n", docs);
 
-        console.log("DEBUG: Found:\n", docs);
+          // Update
+          dbOper.updateDocument(
+            db,
+            { name: "Vadonut" },
+            { description: "Updated Test" }, "dishes",
+            (res) => {
+              console.log("==> Updated Document:\n", res.result);
 
-        db.dropCollection("dishes", (err, _res) => {
-          assert.equal(err, null);
-          cli.close();
+              // Read
+              dbOper.findDocuments(
+                db,
+                "dishes",
+                (docs) => {
+                  console.log("Found Updated Documents:\n", docs);
+
+                  // Delete
+                  db.dropCollection(
+                    "dishes",
+                    (res) => {
+                      console.log("Dropped Collection: ", res);
+                      cli.close();
+                    });
+                });
+            });
         });
       });
-    });
+
 });

@@ -16,25 +16,6 @@ app.use(bodyParser.json());
 
 app.use('/dishes', dishRouter);
 
-// dish details endpoints
-app.get('/dishes/:dishId', (req, resp, _next) => {
-  resp.end(`Will send details of the dish: ${req.params.dishId} to you!`);
-});
-
-app.post('/dishes/:dishId', (req, resp, _next) => {
-  resp.statusCode = 403;
-  resp.end(`POST operation not supported on /dishes/${req.params.dishId}`);
-});
-
-app.put('/dishes/:dishId', (req, resp, _next) => {
-  resp.write(`Updating the dish: ${req.params.dishId}\n`);
-  resp.end(`Will update the dish: ${req.body.name} with details: ${req.body.description}`);
-});
-
-app.delete('/dishes/:dishId', (req, resp, _next) => {
-  resp.end(`Deleting dish: ${req.params.dishId}`);
-});
-
 // rest
 app.use(express.static(__dirname + '/public'));
 

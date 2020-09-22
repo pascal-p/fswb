@@ -18,7 +18,6 @@ promoRouter.route('/')
     resp.end(`Will add the promotion: ${req.body.name} with details: ${req.body.description}`);
   })
   .put((req, resp, _next) => {
-    // not sure if we support this operation or not...
     resp.statusCode = 403;
     resp.end('PUT operation not supported on /promotions yet...');
   })

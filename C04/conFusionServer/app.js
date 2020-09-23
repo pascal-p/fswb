@@ -1,8 +1,12 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let session = require('express-session');
+let FileStore = require('session-file-store')(session);
+
+
 const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
@@ -29,9 +33,10 @@ const setError = (resp) => {
 }
 
 const auth = (req, resp, next) => {
-  console.log("DEBUG request headers: ", req.headers);
+  console.log("DEBUG1 request headers: ", req.headers);
+  console.log("DEBUG2 request session: ", req.session);
 
-  if (!req.signedCookies.user) {
+  if (!req.session.user) {
     let authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -45,7 +50,7 @@ const auth = (req, resp, next) => {
 
     if (user === 'admin' && pass === 'pass-8421') {
       console.log('DEBUG: authorized');
-      resp.cookie('user', 'admin', {signed: true});
+      req.session.user = 'admin';
       next(); // authorized
     }
     else {
@@ -55,7 +60,8 @@ const auth = (req, resp, next) => {
     }
   }
   else {
-    if (req.signedCookies.user === 'admin') {
+    if (req.session.user === 'admin') {
+      console.log("DEBUG req.session: ", req.session);
       next();
     }
     else {
@@ -79,7 +85,14 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser('12345-67890-09876-54321')); // this is supposed to be secret... (server)
+// app.use(cookieParser('12345-67890-09876-54321')); // this is supposed to be secret... (server)
+app.use(session({
+  name: 'session-id',
+  secret: '12345-67890-09876-54321',
+  saveUninitialized: false,
+  resave: false,
+  store: new FileStore()
+}));
 app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 

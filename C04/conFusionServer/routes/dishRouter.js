@@ -4,12 +4,11 @@ const mongoose = require('mongoose');
 
 const Dishes = require('../models/dishes');
 const dishRouter = express.Router();
-
 const ctype = 'application/json'
 
 dishRouter.use(bodyParser.json());
 
-// All Dishes
+// Dishes
 dishRouter.route('/')
   .all((req, resp, next) => {
     resp.setHeader('Content-Type', ctype);
@@ -26,7 +25,6 @@ dishRouter.route('/')
   .post((req, resp, next) => {
     Dishes.create(req.body)
       .then((dish) => {
-        console.log('DEBUG Dish Created ', dish);
         resp.statusCode = 201;
         resp.json(dish);
       }, (err) => next(err))
@@ -37,12 +35,13 @@ dishRouter.route('/')
     resp.end('PUT operation not supported on /dishes');
   })
   .delete((req, resp, next) => {
-    Dishes.deleteOne({})
+    // delete all dishes
+    Dishes.deleteMany({})
       .then((response) => {
         resp.statusCode = 200;
         resp.json(response);
       }, (err) => next(err))
-    .catch((err) => next(err));
+      .catch((err) => next(err));
   });
 
 // Single Dish given by dishId
@@ -77,7 +76,6 @@ dishRouter.route('/:dishId')
     Dishes.findByIdAndRemove(req.params.dishId)
       .then((response) => {
         resp.statusCode = 200;
-        // resp.setHeader('Content-Type', ctype);
         resp.json(response);
       }, (err) => next(err))
       .catch((err) => next(err));

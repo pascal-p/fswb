@@ -29,27 +29,40 @@ const setError = (resp) => {
 }
 
 const auth = (req, resp, next) => {
-  console.log("DEBUG: " + req.headers);
+  console.log("DEBUG request headers: ", req.headers);
 
-  let authHeader = req.headers.authorization;
-  if (!authHeader) {
-    let err = setError(resp);
-    next(err);
-    return;
-  }
+  if (!req.signedCookies.user) {
+    let authHeader = req.headers.authorization;
 
-  let auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-  let [user, pass] = auth; // [auth[0], auth[1]];
-  console.log(`DEBUG: auth user: ${user} / pass: ${pass}`);
+    if (!authHeader) {
+      let err = setError(resp);
+      next(err);
+      return;
+    }
 
-  if (user === 'admin' && pass === 'pass-8421') {
-    console.log('DEBUG: authorized');
-    next(); // authorized
+    let auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    let [user, pass] = auth;
+
+    if (user === 'admin' && pass === 'pass-8421') {
+      console.log('DEBUG: authorized');
+      resp.cookie('user', 'admin', {signed: true});
+      next(); // authorized
+    }
+    else {
+      let err = setError(resp);
+      console.log('DEBUG: NOT authorized');
+      next(err);
+    }
   }
   else {
-    let err = setError(resp);
-    console.log('DEBUG: NOT authorized');
-    next(err);
+    if (req.signedCookies.user === 'admin') {
+      next();
+    }
+    else {
+      console.log("DEBUG no signed cookie...");
+      let err = setError(resp);
+      next(err);
+    }
   }
 }
 
@@ -66,7 +79,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('12345-67890-09876-54321')); // this is supposed to be secret... (server)
 app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 

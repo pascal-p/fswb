@@ -1,0 +1,19 @@
+{
+  "name": "node-mongoose",
+  "version": "1.0.0",
+  "description": "Node Mongoose Ex",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pascal-p/fswb/C04"
+  },
+  "author": "Pascal",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "mongoose": "^5.10.6"
+  }
+}

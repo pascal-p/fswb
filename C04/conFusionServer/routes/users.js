@@ -1,10 +1,12 @@
 let express = require('express');
-let router = express.Router();
 const bodyParser = require('body-parser');
 let passport = require('passport');
-let authenticate = require('../authenticate');
 
+const cors = require('./cors');
+let authenticate = require('../authenticate');
 let User = require('../models/user');
+
+let router = express.Router();
 
 const ctype = 'application/json';
 router.use(bodyParser.json());
@@ -19,6 +21,7 @@ const setError = (resp, err, msg="") => {
 /* GET users listing. */
 router.get(
   '/',
+  cors.cors,
   authenticate.verifyUser,
   authenticate.verifyAdmin,
   (req, resp, next) => {
@@ -30,7 +33,9 @@ router.get(
       .catch((err) => next(err));
   });
 
-router.post('/signup', (req, resp, next) => {
+router.post('/signup',
+            cors.corsWithOptions,
+            (req, resp, next) => {
   console.log("DEBUG: received payload: ", req.body);
 
   User.register(
@@ -63,14 +68,18 @@ router.post('/signup', (req, resp, next) => {
     });
 });
 
-router.post('/login', passport.authenticate('local'), (req, resp) => {
+router.post('/login',
+            cors.corsWithOptions,
+            passport.authenticate('local'), (req, resp) => {
   const token = authenticate.getToken({_id: req.user._id});
   resp.statusCode = 200;
   resp.setHeader('Content-Type', ctype);
   resp.json({success: true, token: token, status: 'You are successfully logged in!'});
 });
 
-router.get('/logout', (req, resp) => {
+router.get('/logout',
+           cors.corsWithOptions,
+           (req, resp) => {
   if (req.session) {
     req.session.destroy();
     resp.clearCookie('session-id');

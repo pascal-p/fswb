@@ -25,12 +25,30 @@ const connect = mongoose.connect(url,
 
 
 connect.then((db) => {
-  console.log("Connected correctly to server");
+  console.log("Connected correctly to DB server");
 }, (err) => { console.log(err); });
 
 
 // App
 let app = express();
+
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  console.log(" ===> DEBUG: secure traffic: ", req.secure, " / hostname: ", req.hostname);
+
+  if (req.secure) {
+    return next();
+  }
+  else {
+    // 307 Temporary Redirect (since HTTP/1.1)
+    // In this case, the request should be repeated with another URI; however, future requests should still
+    // use the original URI. In contrast to how 302 was historically implemented, the request method is not
+    // allowed to be changed when reissuing the original request.
+    // For example, a POST request should be repeated using another POST request.
+    res.redirect(307,
+                 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

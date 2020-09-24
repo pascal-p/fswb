@@ -9,7 +9,9 @@ const ctype = 'application/json'
 
 dishRouter.use(bodyParser.json());
 
+//
 // helper functions
+//
 const hasCommentAndIsOwner = (req, dish, cId) => {
   // there is a comment and req.user is the owner of this comment...
   return dish.comments && dish.comments.id(cId) &&
@@ -33,7 +35,6 @@ const errorCommentNotFound = (cId) => {
   err.status = 404;
   return err;
 }
-
 
 const errorNotCommentOwner = () => {
   let err = new Error('Not owner(author) of this comment');

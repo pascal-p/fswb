@@ -21,7 +21,7 @@ router.get(
   '/',
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, resp, _next) => {
+  (req, resp, next) => {
     User.find()
       .then((users) => {
         resp.statusCode = 200;

@@ -167,3 +167,4 @@ web-build/
 
 sessions/
 C04/conFusionServer/config.js
+C04/conFusionServer/bin/cert*

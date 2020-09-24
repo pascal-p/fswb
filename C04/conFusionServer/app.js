@@ -5,8 +5,8 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let session = require('express-session');
 let FileStore = require('session-file-store')(session);
-
-
+let passport = require('passport');
+let authenticate = require('./authenticate');
 const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
@@ -37,19 +37,14 @@ const setError = (resp, status=401) => {
 const auth = (req, resp, next) => {
   console.log("DEBUG request session: ", req.session);
 
-  if (!req.session.user) {
-    console.log("1 - NO SESSION... ")
+  if (!req.user) {
+    console.log("1 - NO SESSION... ");
     let err = setError(resp, 403);
-    return next(err);
-  }
-  else if (req.session.user === 'authenticated') {
-    console.log("2 - SESSION authenticated... ")
-    next();
-  }
+    next(err);
+    }
   else {
-    console.log("3 - SESSION ERROR... ")
-    let err = setError(resp, 403);
-    return next(err);
+    console.log("2 - SESSION OK... ");
+    next();
   }
 }
 
@@ -68,6 +63,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(session({
   name: 'session-id',
   secret: '12345-67890-09876-54321',
@@ -75,7 +71,8 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

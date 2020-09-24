@@ -22,53 +22,34 @@ const connect = mongoose.connect(url,
                                    useFindAndModify: false,  // https://mongoosejs.com/docs/deprecations.html#findandmodify
                                    useNewUrlParser: true });
 
+
+// Authentication helpers
 const notAuthErr = new Error('You are not authenticated');
 const authHeader = ['WWW-Authenticate', 'Basic'];
 
-const setError = (resp) => {
+const setError = (resp, status=401) => {
   let err = notAuthErr;
   resp.setHeader(...authHeader);
-  err.status = 401;
+  err.status = status;
   return err;
 }
 
 const auth = (req, resp, next) => {
-  console.log("DEBUG1 request headers: ", req.headers);
-  console.log("DEBUG2 request session: ", req.session);
+  console.log("DEBUG request session: ", req.session);
 
   if (!req.session.user) {
-    let authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      let err = setError(resp);
-      next(err);
-      return;
-    }
-
-    let auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-    let [user, pass] = auth;
-
-    if (user === 'admin' && pass === 'pass-8421') {
-      console.log('DEBUG: authorized');
-      req.session.user = 'admin';
-      next(); // authorized
-    }
-    else {
-      let err = setError(resp);
-      console.log('DEBUG: NOT authorized');
-      next(err);
-    }
+    console.log("1 - NO SESSION... ")
+    let err = setError(resp, 403);
+    return next(err);
+  }
+  else if (req.session.user === 'authenticated') {
+    console.log("2 - SESSION authenticated... ")
+    next();
   }
   else {
-    if (req.session.user === 'admin') {
-      console.log("DEBUG req.session: ", req.session);
-      next();
-    }
-    else {
-      console.log("DEBUG no signed cookie...");
-      let err = setError(resp);
-      next(err);
-    }
+    console.log("3 - SESSION ERROR... ")
+    let err = setError(resp, 403);
+    return next(err);
   }
 }
 
@@ -76,6 +57,8 @@ connect.then((db) => {
   console.log("Connected correctly to server");
 }, (err) => { console.log(err); });
 
+
+// App
 let app = express();
 
 // view engine setup
@@ -85,7 +68,6 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser('12345-67890-09876-54321')); // this is supposed to be secret... (server)
 app.use(session({
   name: 'session-id',
   secret: '12345-67890-09876-54321',
@@ -93,11 +75,14 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
-app.use(auth);
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use(auth);
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);

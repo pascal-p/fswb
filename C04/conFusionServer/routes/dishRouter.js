@@ -9,6 +9,40 @@ const ctype = 'application/json'
 
 dishRouter.use(bodyParser.json());
 
+// helper functions
+const hasCommentAndIsOwner = (req, dish, cId) => {
+  // there is a comment and req.user is the owner of this comment...
+  return dish.comments && dish.comments.id(cId) &&
+    req.user._id.equals(dish.comments.id(cId).author);
+}
+
+const hasCommentAndIsNotOwner = (req, dish, cId) => {
+  // there is a comment and req.user is NOT the owner of this comment...
+  return dish.comments && dish.comments.id(cId) &&
+    !req.user._id.equals(dish.comments.id(cId).author);
+}
+
+const errorDishNotFound = (dishId) => {
+  let err = new Error('Dish ' + dishId + ' not found');
+  err.status = 404;
+  return err;
+}
+
+const errorCommentNotFound = (cId) => {
+  let err = new Error('Comment ' + cId + ' not found');
+  err.status = 404;
+  return err;
+}
+
+
+const errorNotCommentOwner = () => {
+  let err = new Error('Not owner(author) of this comment');
+  err.status = 403;
+  return err;
+}
+
+
+
 // Dishes
 dishRouter.route('/')
   .all((req, resp, next) => {
@@ -196,15 +230,16 @@ dishRouter.route('/:dishId/comments/:commentId')
     resp.end('POST operation not supported on /dishes/'+ req.params.dishId
             + '/comments/' + req.params.commentId);
   })
-  .put(authenticate.verifyUser, (req, resp, next) => {  // cors.corsWithOptions,
+  .put(authenticate.verifyUser, (req, resp, next) => {
     Dishes.findById(req.params.dishId)
       .then((dish) => {
-        if (dish  && dish.comments.id(req.params.commentId)) { // truthy
-          // Allow update of rating
+        const cId = req.params.commentId;
+        if (dish && hasCommentAndIsOwner(req, dish, cId)) {
+          // Allow update of rating for owner(author) of the comments
           if (req.body.rating) {
             dish.comments.id(req.params.commentId).rating = req.body.rating;
           }
-          // Allow update of comment
+          // Allow update of comment for owner(author) of the comments
           if (req.body.comment) {
             dish.comments.id(req.params.commentId).comment = req.body.comment;
           }
@@ -219,22 +254,23 @@ dishRouter.route('/:dishId/comments/:commentId')
             }, (err) => next(err));
         }
         else if (!dish) {
-          err = new Error('Dish ' + req.params.dishId + ' not found');
-          err.status = 404;
-          return next(err);
+          return next(errorDishNotFound(req.params.dishId));
+        }
+        else if (hasCommentAndIsNotOwner(req, dish, cId)) {
+          return next(errorNotCommentOwner());
         }
         else {
-          err = new Error('Comment ' + req.params.commentId + ' not found');
-          err.status = 404;
-          return next(err);
+          return next(errorCommentNotFound(cId));
         }
       }, (err) => next(err))
       .catch((err) => next(err));
   })
-  .delete(authenticate.verifyUser, (req, resp, next) => {  // cors.corsWithOptions,
+  .delete(authenticate.verifyUser, (req, resp, next) => {
     Dishes.findById(req.params.dishId)
       .then((dish) => {
-        if (dish && dish.comments.id(req.params.commentId)) {
+        const cId = req.params.commentId;
+        if (dish && hasCommentAndIsOwner(req, dish, cId)) {
+          // only by owner
           dish.comments.id(req.params.commentId).remove();
           dish.save()
             .then((dish) => {
@@ -247,14 +283,13 @@ dishRouter.route('/:dishId/comments/:commentId')
             }, (err) => next(err));
         }
         else if (!dish) {
-          err = new Error('Dish ' + req.params.dishId + ' not found');
-          err.status = 404;
-          return next(err);
+          return next(errorDishNotFound(req.params.dishId));
+        }
+        else if (hasCommentAndIsNotOwner(req, dish, cId)) {
+          return next(errorNotCommentOwner());
         }
         else {
-          err = new Error('Comment ' + req.params.commentId + ' not found');
-          err.status = 404;
-          return next(err);
+          return next(errorCommentNotFound(cId));
         }
       }, (err) => next(err))
       .catch((err) => next(err));

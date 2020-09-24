@@ -7,6 +7,7 @@ let session = require('express-session');
 let FileStore = require('session-file-store')(session);
 let passport = require('passport');
 let authenticate = require('./authenticate');
+let config = require('./config');
 const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
@@ -16,37 +17,12 @@ const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
 const Dishes = require('./models/dishes');
 
-const url = 'mongodb://localhost:27017/conFusion';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url,
                                  { useUnifiedTopology: true,
                                    useFindAndModify: false,  // https://mongoosejs.com/docs/deprecations.html#findandmodify
                                    useNewUrlParser: true });
 
-
-// Authentication helpers
-const notAuthErr = new Error('You are not authenticated');
-const authHeader = ['WWW-Authenticate', 'Basic'];
-
-const setError = (resp, status=401) => {
-  let err = notAuthErr;
-  resp.setHeader(...authHeader);
-  err.status = status;
-  return err;
-}
-
-const auth = (req, resp, next) => {
-  console.log("DEBUG request session: ", req.session);
-
-  if (!req.user) {
-    console.log("1 - NO SESSION... ");
-    let err = setError(resp, 403);
-    next(err);
-    }
-  else {
-    console.log("2 - SESSION OK... ");
-    next();
-  }
-}
 
 connect.then((db) => {
   console.log("Connected correctly to server");
@@ -72,14 +48,10 @@ app.use(session({
   store: new FileStore()
 }));
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
@@ -90,7 +62,7 @@ app.use(function(req, _resp, next) {
 });
 
 // error handler
-app.use(function(err, req, resp, _next) {
+app.use((err, req, resp, _next) => {
   // set locals, only providing error in development
   resp.locals.message = err.message;
   resp.locals.error = req.app.get('env') === 'development' ? err : {};

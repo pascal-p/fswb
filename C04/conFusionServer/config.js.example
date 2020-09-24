@@ -1,0 +1,5 @@
+module.exports = {
+  'secretKey': '11111-67222-11876-45221',
+
+  'mongoUrl' : 'mongodb://localhost:27017/conFusion'
+}

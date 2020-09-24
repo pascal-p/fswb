@@ -15,6 +15,7 @@ const usersRouter = require('./routes/users');
 const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
+const uploadRouter = require('./routes/uploadRouter');
 const Dishes = require('./models/dishes');
 
 const url = config.mongoUrl;
@@ -25,7 +26,7 @@ const connect = mongoose.connect(url,
 
 
 connect.then((db) => {
-  console.log("Connected correctly to DB server");
+  console.log("DEBUG: Connected correctly to DB server");
 }, (err) => { console.log(err); });
 
 
@@ -34,7 +35,7 @@ let app = express();
 
 // Secure traffic only
 app.all('*', (req, res, next) => {
-  console.log(" ===> DEBUG: secure traffic: ", req.secure, " / hostname: ", req.hostname);
+  console.log("DEBUG: secure traffic: ", req.secure, " / hostname: ", req.hostname);
 
   if (req.secure) {
     return next();
@@ -73,6 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
+app.use('/imageUpload', uploadRouter);
 
 // catch 404 and forward to error handler
 app.use((req, _resp, next) => {

@@ -32,7 +32,6 @@ exports.jwtPassport = passport.use(new JwtStrategy(
         return done(err, false);
       }
       else if (user) {
-        console.log("====> we have a user: ", user)
         return done(null, user);
       }
       else {
@@ -45,11 +44,10 @@ exports.verifyUser = passport.authenticate('jwt', {session: false});
 
 exports.verifyAdmin = (req, _resp, next) => {
   if (req.user.admin) {
-    console.log(">> DEBUG : Admin Access detected...");
+    console.log("DEBUG: Admin Access detected...");
     next();
   }
   else {
-    console.log(">> DEBUG : NOT an Admin...");
     let err = new Error('You are not authorized to perform this operation!');
     err.status = 403;
     next(err);

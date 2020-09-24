@@ -17,9 +17,18 @@ const setError = (resp, err, msg="") => {
 }
 
 /* GET users listing. */
-router.get('/', function(req, resp, _next) {
-  resp.send('respond with a resource');
-});
+router.get(
+  '/',
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  (req, resp, _next) => {
+    User.find()
+      .then((users) => {
+        resp.statusCode = 200;
+        resp.json(users);
+      }, (err) => next(err))
+      .catch((err) => next(err));
+  });
 
 router.post('/signup', (req, resp, next) => {
   console.log("DEBUG: received payload: ", req.body);

@@ -16,10 +16,11 @@ dishRouter.route('/')
     next();
   })
   .get((req, resp, next) => {
-    Dishes.find({})
-      .then((dishes) => {
+    Dishes.find()  // retrieve all dishes here...
+      .populate('comments.author')
+      .then((dish) => {
         resp.statusCode = 200;
-        resp.json(dishes);
+        resp.json(dish);
       }, (err) => next(err))
       .catch((err) => next(err));
   })
@@ -52,6 +53,7 @@ dishRouter.route('/:dishId')
   })
   .get((req, resp, next) => {
     Dishes.findById(req.params.dishId)
+      .populate('comments.author')
       .then((dish) => {
         resp.statusCode = 200;
         resp.json(dish);
@@ -89,6 +91,7 @@ dishRouter.route('/:dishId/comments')
   })
   .get((req, resp, next) => {
     Dishes.findById(req.params.dishId)
+      .populate('comments.author')
       .then((dish) => {
         if (dish) { // truthy...
           resp.statusCode = 200;
@@ -107,11 +110,16 @@ dishRouter.route('/:dishId/comments')
       .then((dish) => {
         console.log("POST on dish ", dish);
         if (dish) {
+          req.body.author = req.user._id;
           dish.comments.push(req.body);
           dish.save()
             .then((dish) => {
-              resp.statusCode = 200;
-              resp.json(dish);
+              Dishes.findById(dish._id)
+                .populate('comments.author')
+                .then((dish) => {
+                  resp.statusCode = 200;
+                  resp.json(dish);
+                })
             }, (err) => next(err));
         }
         else {
@@ -157,6 +165,7 @@ dishRouter.route('/:dishId/comments/:commentId')
   })
   .get((req, resp, next) => {
     Dishes.findById(req.params.dishId)
+      .populate('comments.author')
       .then((dish) => {
         if (dish != null && dish.comments.id(req.params.commentId) != null) {
           resp.statusCode = 200;
@@ -180,7 +189,7 @@ dishRouter.route('/:dishId/comments/:commentId')
     resp.end('POST operation not supported on /dishes/'+ req.params.dishId
             + '/comments/' + req.params.commentId);
   })
-  .put(authenticate.verifyUser, (req, resp, next) => {
+  .put(authenticate.verifyUser, (req, resp, next) => {  // cors.corsWithOptions,
     Dishes.findById(req.params.dishId)
       .then((dish) => {
         if (dish  && dish.comments.id(req.params.commentId)) { // truthy
@@ -194,8 +203,12 @@ dishRouter.route('/:dishId/comments/:commentId')
           }
           dish.save()
             .then((dish) => {
-              resp.statusCode = 200;
-              resp.json(dish);
+              Dishes.findById(dish._id)
+                .populate('comments.author')
+                .then((dish) => {
+                  resp.statusCode = 200;
+                  resp.json(dish);
+                })
             }, (err) => next(err));
         }
         else if (!dish) {
@@ -211,15 +224,19 @@ dishRouter.route('/:dishId/comments/:commentId')
       }, (err) => next(err))
       .catch((err) => next(err));
   })
-  .delete(authenticate.verifyUser, (req, resp, next) => {
+  .delete(authenticate.verifyUser, (req, resp, next) => {  // cors.corsWithOptions,
     Dishes.findById(req.params.dishId)
       .then((dish) => {
         if (dish && dish.comments.id(req.params.commentId)) {
           dish.comments.id(req.params.commentId).remove();
           dish.save()
             .then((dish) => {
-              resp.statusCode = 200;
-              resp.json(dish);
+              Dishes.findById(dish._id)
+                .populate('comments.author')
+                .then((dish) => {
+                  resp.statusCode = 200;
+                  resp.json(dish);
+                })
             }, (err) => next(err));
         }
         else if (!dish) {

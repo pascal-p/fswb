@@ -10,26 +10,45 @@ const ctype = 'application/json';
 router.use(bodyParser.json());
 
 
+const setError = (resp, err, msg="") => {
+  resp.statusCode = 500;
+  resp.setHeader('Content-Type', ctype);
+  resp.json({err: err, msg: msg});
+}
+
 /* GET users listing. */
 router.get('/', function(req, resp, _next) {
   resp.send('respond with a resource');
 });
 
 router.post('/signup', (req, resp, next) => {
+  console.log("DEBUG: received payload: ", req.body);
+
   User.register(
     new User({username: req.body.username}),
     req.body.password,
-    (err, _user) => {
+    (err, user) => {
       if (err) {
-        resp.statusCode = 500;
-        resp.setHeader('Content-Type', ctype);
-        resp.json({err: err});
+        setError(resp, err, "Error type 1");
       }
       else {
-        passport.authenticate('local')(req, resp, () => {
-          resp.statusCode = 200;
-          resp.setHeader('Content-Type', ctype);
-          resp.json({success: true, status: 'Registration Successful!'});
+        if (req.body.firstname)
+          user.firstname = req.body.firstname;
+
+        if (req.body.lastname)
+          user.lastname = req.body.lastname;
+
+        user.save((err, user) => {
+          if (err) {
+            setError(resp, err, "Error type 2 - when saving...");
+            return;
+          }
+
+          passport.authenticate('local')(req, resp, () => {
+            resp.statusCode = 200;
+            resp.setHeader('Content-Type', ctype);
+            resp.json({success: true, status: 'Registration Successful!'});
+          });
         });
       }
     });

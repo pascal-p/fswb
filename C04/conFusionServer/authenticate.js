@@ -9,7 +9,6 @@ let config = require('./config.js');
 let User = require('./models/user');
 
 passport.use(new LocalStrategy(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -33,6 +32,7 @@ exports.jwtPassport = passport.use(new JwtStrategy(
         return done(err, false);
       }
       else if (user) {
+        console.log("====> we have a user: ", user)
         return done(null, user);
       }
       else {
@@ -42,3 +42,16 @@ exports.jwtPassport = passport.use(new JwtStrategy(
   }));
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+
+exports.verifyAdmin = (req, _resp, next) => {
+  if (req.user.admin) {
+    console.log(">> DEBUG : Admin Access detected...");
+    next();
+  }
+  else {
+    console.log(">> DEBUG : NOT an Admin...");
+    let err = new Error('You are not authorized to perform this operation!');
+    err.status = 403;
+    next(err);
+  }
+}

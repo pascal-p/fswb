@@ -93,4 +93,29 @@ router.get('/logout',
   }
 });
 
+
+//
+// github oauth
+//
+router.get('/github/token',
+           passport.authenticate('github'),
+           (req, resp) => {   // or is it 'github-token'?
+  if (req.user) {
+    let token = authenticate.getToken({_id: req.user._id});
+    resp.statusCode = 200;
+    resp.setHeader('Content-Type', 'application/json');
+    resp.json({success: true, token: token, status: 'You are successfully logged in!'});
+  }
+});
+
+router.get('/github/callback',
+        passport.authenticate('github',
+                              { failureRedirect: '/login' }),
+        (req, resp) => {
+          console.log(" Github return here... ")
+          // Successful authentication, redirect home.
+          resp.redirect('/');
+        }
+);
+
 module.exports = router;

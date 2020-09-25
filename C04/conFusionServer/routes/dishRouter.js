@@ -44,10 +44,9 @@ const errorNotCommentOwner = () => {
 }
 
 
-
 // Dishes
 dishRouter.route('/')
-  .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+  .options(cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
   .all((req, resp, next) => {
     resp.setHeader('Content-Type', ctype);
     next();
@@ -254,11 +253,11 @@ dishRouter.route('/:dishId/comments/:commentId')
         if (dish && hasCommentAndIsOwner(req, dish, cId)) {
           // Allow update of rating for owner(author) of the comments
           if (req.body.rating) {
-            dish.comments.id(req.params.commentId).rating = req.body.rating;
+            dish.comments.id(cId).rating = req.body.rating;
           }
           // Allow update of comment for owner(author) of the comments
           if (req.body.comment) {
-            dish.comments.id(req.params.commentId).comment = req.body.comment;
+            dish.comments.id(cId).comment = req.body.comment;
           }
           dish.save()
             .then((dish) => {
@@ -289,7 +288,7 @@ dishRouter.route('/:dishId/comments/:commentId')
         const cId = req.params.commentId;
         if (dish && hasCommentAndIsOwner(req, dish, cId)) {
           // only by owner
-          dish.comments.id(req.params.commentId).remove();
+          dish.comments.id(cId).remove();
           dish.save()
             .then((dish) => {
               Dishes.findById(dish._id)
@@ -298,7 +297,8 @@ dishRouter.route('/:dishId/comments/:commentId')
                   resp.statusCode = 200;
                   resp.json(dish);
                 })
-            }, (err) => next(err));
+            }, (err) => next(err))
+            .catch((err) => next(err));
         }
         else if (!dish) {
           return next(errorDishNotFound(req.params.dishId));

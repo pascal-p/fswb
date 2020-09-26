@@ -12,13 +12,13 @@ promoRouter.use(bodyParser.json());
 
 // Promotion(s)
 promoRouter.route('/')
-  .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+  .options(cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
   .all((req, resp, next) => {
     resp.setHeader('Content-Type', ctype);
     next();
   })
   .get(cors.cors, (req, resp, next) => {
-    Promotions.find({})
+    Promotions.find(req.query)
       .then((promos) => {
         resp.statusCode = 200;
         resp.json(promos);

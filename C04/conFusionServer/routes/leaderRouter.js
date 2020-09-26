@@ -12,13 +12,13 @@ leaderRouter.use(bodyParser.json());
 
 // Leader(s)
 leaderRouter.route('/')
-  .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+  .options(cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
   .all((req, resp, next) => {
     resp.setHeader('Content-Type', ctype);
     next();
   })
   .get(cors.cors, (req, resp, next) => {
-    Leaders.find({})
+    Leaders.find(req.query)
       .then((leaders) => {
         resp.statusCode = 200;
         resp.json(leaders);

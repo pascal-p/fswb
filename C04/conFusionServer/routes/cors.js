@@ -6,13 +6,13 @@ const whitelist = [
   'http://localhost:3000',
   'https://localhost:3443',
   'https://turing.corto-nz.home:3443',
-  'http;//turing.corto-nz.home:3001',  // React FrontEnd
-  'http;//localhost:3001',             // React FrontEnd
+  'http://turing.corto-nz.home:3001',  // React FrontEnd
+  'http://localhost:3001'              // React FrontEnd
 ];
 
 const corsOptionsDelegate = (req, cb) => {
   let corsOptions = { origin: false };
-  console.log("DEBUG: req.header('Origin'): [", req.header('Origin'), "]");
+  console.log(`DEBUG: req.header('Origin'): [${req.header('Origin')}]`);
 
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
     corsOptions.origin = true;

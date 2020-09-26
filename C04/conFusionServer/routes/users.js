@@ -19,7 +19,13 @@ const setError = (resp, err, msg="") => {
 }
 
 
-router.options('*', cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
+router.options(
+  '*',
+  cors.corsWithOptions,
+  (req, resp) => {
+    console.log("===> DEBUG OPTIONS / cors: ", cors.corsWithOptions);
+    resp.sendStatus(200);
+  })
 
 /* GET users listing. */
 router.get(
@@ -73,26 +79,25 @@ router.post('/signup',
 
 router.post('/login',
             cors.corsWithOptions,
-            (req, res, next) => {
+            (req, resp, next) => {
+  resp.setHeader('Content-Type', ctype);
+
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
 
     if (!user) {
       resp.statusCode = 401;
-      resp.setHeader('Content-Type', ctype);
-      resp.json({success: false, status: 'Login Unsuccessful!', err: info});
+      return resp.json({success: false, status: 'Login Unsuccessful!', err: info});
     }
 
     req.logIn(user, (err) => {
       if (err) {
         resp.statusCode = 401;
-        resp.setHeader('Content-Type', ctype);
-        resp.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user!'});
+        return resp.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user!'});
       }
 
       const token = authenticate.getToken({_id: req.user._id});
       resp.statusCode = 200;
-      resp.setHeader('Content-Type', ctype);
       resp.json({success: true, status: 'Login Successful!', token: token});
     });
   })(req, resp, next);
@@ -100,19 +105,17 @@ router.post('/login',
 
 router.get('/checkJWTtoken',
            cors.corsWithOptions, (req, resp, next) => {
+  resp.setHeader('Content-Type', ctype);
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
     if (err) return next(err);
 
     if (!user) {
       resp.statusCode = 401;
-      resp.setHeader('Content-Type', ctype);
       return resp.json({status: 'JWT invalid!', success: false, err: info});
     }
     else {
       resp.statusCode = 200;
-      resp.setHeader('Content-Type', ctype);
       return res.json({status: 'JWT valid!', success: true, user: user});
-
     }
   })(req, resp);
 });

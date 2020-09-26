@@ -18,6 +18,9 @@ const setError = (resp, err, msg="") => {
   resp.json({err: err, msg: msg});
 }
 
+
+router.options('*', cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
+
 /* GET users listing. */
 router.get(
   '/',
@@ -31,7 +34,7 @@ router.get(
         resp.json(users);
       }, (err) => next(err))
       .catch((err) => next(err));
-  });
+});
 
 router.post('/signup',
             cors.corsWithOptions,
@@ -70,29 +73,49 @@ router.post('/signup',
 
 router.post('/login',
             cors.corsWithOptions,
-            passport.authenticate('local'), (req, resp) => {
-  const token = authenticate.getToken({_id: req.user._id});
-  resp.statusCode = 200;
-  resp.setHeader('Content-Type', ctype);
-  resp.json({success: true, token: token, status: 'You are successfully logged in!'});
+            (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+
+    if (!user) {
+      resp.statusCode = 401;
+      resp.setHeader('Content-Type', ctype);
+      resp.json({success: false, status: 'Login Unsuccessful!', err: info});
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        resp.statusCode = 401;
+        resp.setHeader('Content-Type', ctype);
+        resp.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user!'});
+      }
+
+      const token = authenticate.getToken({_id: req.user._id});
+      resp.statusCode = 200;
+      resp.setHeader('Content-Type', ctype);
+      resp.json({success: true, status: 'Login Successful!', token: token});
+    });
+  })(req, resp, next);
 });
 
-router.get('/logout',
-           cors.corsWithOptions,
-           (req, resp) => {
-  if (req.session) {
-    req.session.destroy();
-    resp.clearCookie('session-id');
+router.get('/checkJWTtoken',
+           cors.corsWithOptions, (req, resp, next) => {
+  passport.authenticate('jwt', {session: false}, (err, user, info) => {
+    if (err) return next(err);
 
-    resp.redirect('/');
-  }
-  else {
-    let err = new Error('You are not logged in!');
-    err.status = 403;
-    next(err);
-  }
+    if (!user) {
+      resp.statusCode = 401;
+      resp.setHeader('Content-Type', ctype);
+      return resp.json({status: 'JWT invalid!', success: false, err: info});
+    }
+    else {
+      resp.statusCode = 200;
+      resp.setHeader('Content-Type', ctype);
+      return res.json({status: 'JWT valid!', success: true, user: user});
+
+    }
+  })(req, resp);
 });
-
 
 //
 // github oauth
@@ -103,7 +126,7 @@ router.get('/github/token',
   if (req.user) {
     let token = authenticate.getToken({_id: req.user._id});
     resp.statusCode = 200;
-    resp.setHeader('Content-Type', 'application/json');
+    resp.setHeader('Content-Type', ctype);
     resp.json({success: true, token: token, status: 'You are successfully logged in!'});
   }
 });
@@ -117,5 +140,22 @@ router.get('/github/callback',
           resp.redirect('/');
         }
 );
+
+router.get('/logout',
+           cors.corsWithOptions,
+           (req, resp, next) => {
+  if (req.session) {
+    req.session.destroy();
+    resp.clearCookie('session-id');
+
+    resp.redirect('/');
+  }
+  else {
+    let err = new Error('You are not logged in!');
+    err.status = 403;
+    next(err);
+  }
+});
+
 
 module.exports = router;

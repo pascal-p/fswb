@@ -11,8 +11,7 @@ const ctype = 'application/json'
 dishRouter.use(bodyParser.json());
 
 //
-// helper functions
-//
+// Helper functions
 const hasCommentAndIsOwner = (req, dish, cId) => {
   // there is a comment and req.user is the owner of this comment...
   return dish.comments && dish.comments.id(cId) &&
@@ -43,7 +42,21 @@ const errorNotCommentOwner = () => {
   return err;
 }
 
+const renderObj = (resp, _next, dish, code=200) => {
+  resp.statusCode = code;
+  resp.json(dish);
+}
 
+const populateAndRenderDish = (resp, next, dish, code=200) => {
+  Dishes.findById(dish._id)
+    .populate('comments.author')
+    .then((dish) => {
+      renderObj(resp, next, dish, code);
+    })
+}
+
+
+//
 // Dishes
 dishRouter.route('/')
   .options(cors.corsWithOptions, (req, resp) => { resp.sendStatus(200); })
@@ -52,11 +65,10 @@ dishRouter.route('/')
     next();
   })
   .get(cors.cors, (req, resp, next) => {
-    Dishes.find()  // retrieve all dishes here...
+    Dishes.find(req.query)  // retrieve all dishes here...
       .populate('comments.author')
       .then((dish) => {
-        resp.statusCode = 200;
-        resp.json(dish);
+        renderObj(resp, next, dish);
       }, (err) => next(err))
       .catch((err) => next(err));
   })
@@ -65,8 +77,7 @@ dishRouter.route('/')
         authenticate.verifyAdmin, (req, resp, next) => {
     Dishes.create(req.body)
       .then((dish) => {
-        resp.statusCode = 201;
-        resp.json(dish);
+        renderObj(resp, next, dish, 201);
       }, (err) => next(err))
       .catch((err) => next(err));
   })
@@ -80,9 +91,8 @@ dishRouter.route('/')
           authenticate.verifyUser,
           authenticate.verifyAdmin, (req, resp, next) => {
     Dishes.deleteMany({})
-      .then((response) => {
-        resp.statusCode = 200;
-        resp.json(response);
+      .then((out) => {
+        renderObj(resp, next, out);
       }, (err) => next(err))
       .catch((err) => next(err));
   });
@@ -98,8 +108,7 @@ dishRouter.route('/:dishId')
     Dishes.findById(req.params.dishId)
       .populate('comments.author')
       .then((dish) => {
-        resp.statusCode = 200;
-        resp.json(dish);
+        renderObj(resp, next, dish);
       }, (err) => next(err))
       .catch((err) => next(err));
   })
@@ -116,8 +125,7 @@ dishRouter.route('/:dishId')
       $set: req.body
     }, { new: true })
       .then((dish) => {
-        resp.statusCode = 200;
-        resp.json(dish);
+        renderObj(resp, next, dish);
       }, (err) => next(err))
       .catch((err) => next(err));
   })
@@ -125,12 +133,12 @@ dishRouter.route('/:dishId')
           authenticate.verifyUser,
           authenticate.verifyAdmin, (req, resp, next) => {
     Dishes.findByIdAndRemove(req.params.dishId)
-      .then((response) => {
-        resp.statusCode = 200;
-        resp.json(response);
+      .then((out) => {
+        renderObj(resp, next, out);
       }, (err) => next(err))
       .catch((err) => next(err));
   });
+
 
 // Single Dish embedded Comments
 dishRouter.route('/:dishId/comments')
@@ -144,8 +152,7 @@ dishRouter.route('/:dishId/comments')
       .populate('comments.author')
       .then((dish) => {
         if (dish) { // truthy...
-          resp.statusCode = 200;
-          resp.json(dish.comments);
+          renderObj(resp, next, dish.comments);
         }
         else {
           err = new Error('Dish ' + req.params.dishId + ' not found');
@@ -165,12 +172,7 @@ dishRouter.route('/:dishId/comments')
           dish.comments.push(req.body);
           dish.save()
             .then((dish) => {
-              Dishes.findById(dish._id)
-                .populate('comments.author')
-                .then((dish) => {
-                  resp.statusCode = 200;
-                  resp.json(dish);
-                })
+              populateAndRenderDish(resp, next, dish, 200);
             }, (err) => next(err));
         }
         else {
@@ -198,8 +200,7 @@ dishRouter.route('/:dishId/comments')
           }
           dish.save()
             .then((dish) => {
-              resp.statusCode = 200;
-              resp.json(dish);
+              renderObj(resp, next, dish);
             }, (err) => next(err));
         }
         else {
@@ -223,8 +224,7 @@ dishRouter.route('/:dishId/comments/:commentId')
       .populate('comments.author')
       .then((dish) => {
         if (dish != null && dish.comments.id(req.params.commentId) != null) {
-          resp.statusCode = 200;
-          resp.json(dish.comments.id(req.params.commentId));
+          renderObj(resp, next, dish.comments.id(req.params.commentId));
         }
         else if (!dish) { // falsey
           err = new Error('Dish ' + req.params.dishId + ' not found');
@@ -261,12 +261,7 @@ dishRouter.route('/:dishId/comments/:commentId')
           }
           dish.save()
             .then((dish) => {
-              Dishes.findById(dish._id)
-                .populate('comments.author')
-                .then((dish) => {
-                  resp.statusCode = 200;
-                  resp.json(dish);
-                })
+              populateAndRenderDish(resp, next, dish, 200);
             }, (err) => next(err));
         }
         else if (!dish) {
@@ -291,12 +286,7 @@ dishRouter.route('/:dishId/comments/:commentId')
           dish.comments.id(cId).remove();
           dish.save()
             .then((dish) => {
-              Dishes.findById(dish._id)
-                .populate('comments.author')
-                .then((dish) => {
-                  resp.statusCode = 200;
-                  resp.json(dish);
-                })
+              populateAndRenderDish(resp, next, dish, 200);
             }, (err) => next(err))
             .catch((err) => next(err));
         }
@@ -312,6 +302,5 @@ dishRouter.route('/:dishId/comments/:commentId')
       }, (err) => next(err))
       .catch((err) => next(err));
   });
-
 
 module.exports = dishRouter;

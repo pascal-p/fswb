@@ -3,7 +3,7 @@
 
 *.org
 #*.org#
->*.pdf
+*.pdf
 *.pyc
 *.h5
 lab2/logs/*
@@ -143,19 +143,34 @@ dmypy.json
 .pyre/
 
 #
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 */*/node_modules/
 */node_modules/
-
 .eslintrc
 .npmrc
 dist/*
 **/json-server/
-C0*/json-server
 
+C0*/json-server
 node_modules/**/*
 */confusion/.expo/*
 */confusion/.expo-shared/*
 npm-debug.*
+yarn-debug*
+yarn-error*
 *.jks
 *.p8
 *.p12
@@ -168,3 +183,4 @@ web-build/
 sessions/
 C04/conFusionServer/config.js
 C04/conFusionServer/bin/cert*
+C05/

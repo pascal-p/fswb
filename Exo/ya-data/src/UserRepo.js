@@ -6,7 +6,7 @@ export function UserRepo({ login, selectedRepo, onSelect = f => f }) {
   return (
     <Fetch uri={`https://api.github.com/users/${login}/repos`}
       renderSuccess={({ data }) => (
-        <RepoMenu
+          <RepoMenu login={login}
           repositories={data}
           selectedRepo={selectedRepo}
           onSelect={onSelect}

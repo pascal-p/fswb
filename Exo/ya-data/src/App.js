@@ -10,8 +10,9 @@ function UserDetails({ data }) {
 
       <div>
         <h1>{data.login}</h1>
-        {data.name && <p>{data.name}</p>}
-        {data.location && <p>{data.location}</p>}
+        {data.name && <p>Name: <strong>{data.name}</strong></p>}
+        {data.location && <p>Location: <strong>{data.location}</strong></p>}
+        {data.company && <p>Comp.: <strong>{data.company}</strong></p>}
       </div>
 
       <UserRepo

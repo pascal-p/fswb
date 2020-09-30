@@ -6,6 +6,8 @@ export function Fetch({ uri, renderSuccess, loadingFallback = <p>loading...</p>,
   const { loading, data, error } = useFetch(uri);
 
   if (loading) return loadingFallback;
+
   if (error) return renderError(error);
+
   if (data) return renderSuccess({ data });
 }

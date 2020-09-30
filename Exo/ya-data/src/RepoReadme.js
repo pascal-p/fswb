@@ -8,7 +8,7 @@ export default function RepoReadme({ repo, login }) {
 
   const loadReadme = useCallback(async (login, repo) => {
     setLoading(true);
-    
+
     const uri = `https://api.github.com/repos/${login}/${repo}/readme`;
     const { download_url } = await fetch(uri).then(res => res.json());
     const markdown = await fetch(download_url).then(res => res.text());
@@ -20,11 +20,11 @@ export default function RepoReadme({ repo, login }) {
   useEffect(() => {
     if (!repo || !login) return;
 
-    loadReadme(login, repo).catch(setError);    
+    loadReadme(login, repo).catch(setError);
   }, [repo, loadReadme, login]);
 
   if (error) return <pre>{JSON.stringify(error, null, 2)}</pre>;
   if (loading) return <p>Loading...</p>;
 
   return <ReactMarkdown source={markdown} />;
-}  
+}

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function withDataFetching(WrappedComponent) {
 
-  return class extends React.Component {
+  class WithDataFetching extends React.Component {
     constructor(props) {
       super(props);
 
@@ -41,6 +41,8 @@ export default function withDataFetching(WrappedComponent) {
         <WrappedComponent data={data} loading={loading} error={error} {...this.props} />
       );
     }
-
   }
+
+  WithDataFetching.displayName = `WithDataFetching(${WrappedComponent.name})`;
+  return WithDataFetching;
 }

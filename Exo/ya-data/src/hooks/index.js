@@ -12,7 +12,7 @@ export function useFetch(uri) {
     if (!uri) return;
 
     fetch(uri)
-      .then(data => data.json())
+      .then((data) => data.json())
       .then(setData)
       .then(() => setLoading(false))
       .catch(setError);
@@ -39,11 +39,8 @@ export const useIterator = (items = [], initVal = 0) => {
   return [item || items[0], prev, next];
 };
 
-export const useInput = initVal => {
+export const useInput = (initVal) => {
   const [value, setValue] = useState(initVal);
 
-  return [
-    { value, onChange: evt => setValue(evt.target.value) },
-    () => setValue(initVal)
-  ];
+  return [{ value, onChange: (evt) => setValue(evt.target.value) }, () => setValue(initVal)];
 };

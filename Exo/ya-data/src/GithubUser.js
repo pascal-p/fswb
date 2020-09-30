@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 import { Fetch } from "./Fetch";
 
@@ -7,6 +8,11 @@ export default function GithubUser({ login }) {
     <Fetch uri={`https://api.github.com/users/${login}`}
       renderSuccess={UserDetails} />
   );
+}
+
+// avoid eslint error: 5:38  error  'login' is missing in props validation
+GithubUser.propTypes = {
+  login: PropTypes.string.isRequired
 }
 
 function UserDetails({ data }) {
@@ -22,4 +28,9 @@ function UserDetails({ data }) {
       </div>
     </div>
   );
+}
+
+// avoid eslint error: 12:24  error  'data' is missing in props validation
+UserDetails.propTypes = {
+  data: PropTypes.object.isRequired
 }

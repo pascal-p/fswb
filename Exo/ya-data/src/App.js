@@ -6,9 +6,10 @@ import { UserRepo } from "./UserRepo";
 import RepoReadme  from "./RepoReadme"
 
 export default function App() {
-  const [login, setLogin] = useState(""); // pascal-p
+  const [login] = useState(""); // const [login, setLogin] = useState(""); // pascal-p
   const [repo, setRepo] = useState(""); // Algo
 
+  /*
   const handleSearch = log_in => {
     if (log_in) return setLogin(log_in);
 
@@ -20,13 +21,14 @@ export default function App() {
     return (
         <SearchForm value={login} onSearch={handleSearch} />
     );
+  */
 
-   // <SearchForm value={login} onSearch={handleSearch} />
-   // <SearchForm value={login} onSearch={setLogin} />
+  // <SearchForm value={login} onSearch={handleSearch} />
+  // <SearchForm value={login} onSearch={setLogin} />
 
   return (
     <>
-      <SearchForm value={login} onSearch={handleSearch} />
+      <SearchForm />
       { console.log("in App.js after search form / login is: ", login) }
       {login && <GithubUser login={login} />}
       {login && (<UserRepo login={login} repo={repo} onSelect={setRepo} />)}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
+import PropTypes from 'prop-types';
 import ReactMarkdown from "react-markdown";
 
-export default function RepoReadme({ repo, login }) {
+export default function RepoReadme({ login, repo }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [markdown, setMarkdown] = useState("");
@@ -27,4 +28,9 @@ export default function RepoReadme({ repo, login }) {
   if (loading) return <p>Loading...</p>;
 
   return <ReactMarkdown source={markdown} />;
+}
+
+RepoReadme.propTypes = {
+  login: PropTypes.string.isRequired,
+  repo: PropTypes.string.isRequired
 }

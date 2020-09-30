@@ -1,9 +1,11 @@
 import React, { useState }  from "react";
+// import PropTypes from 'prop-types';
 
 import { useInput } from "./hooks";
 
 
-export default function SearchForm({ _value, onSearch = f => f }) {
+// export default function SearchForm({ onSearch = f => f }) {
+export default function SearchForm() {
   const [login, resetLogin] = useInput("");
   const [, setLogin] = useState();
 
@@ -11,8 +13,9 @@ export default function SearchForm({ _value, onSearch = f => f }) {
     evt.preventDefault();
     console.log("login is: ", login, " / login.state: ", login.value);
 
+    setLogin(login.value);
     resetLogin();
-    return setLogin(login.value);
+    // return setLogin(login.value);
   };
 
   return (
@@ -22,3 +25,9 @@ export default function SearchForm({ _value, onSearch = f => f }) {
     </form>
   );
 }
+
+/*
+SearchForm.propTypes = {
+  onSearch: PropTypes.func.isRequired
+}
+*/

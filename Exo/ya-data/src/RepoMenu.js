@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import { useIterator } from "./hooks";
 
-// export default function RepoMenu({ login, repositories, selected, onSelect = f => f }) {
 export default function RepoMenu({ repositories, selected, onSelect = (f) => f }) {
   const [{ name }, previous, next] = useIterator(
     repositories,
@@ -28,7 +27,6 @@ export default function RepoMenu({ repositories, selected, onSelect = (f) => f }
 }
 
 RepoMenu.propTypes = {
-  // login: PropTypes.string.isRequired,
   repositories: PropTypes.array.isRequired,
   selected: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired

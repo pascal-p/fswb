@@ -20,4 +20,3 @@ UserRepo.propTypes = {
   repo: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired
 };
-// <RepoMenu login={login} repositories={data} selected={repo} onSelect={onSelect} />

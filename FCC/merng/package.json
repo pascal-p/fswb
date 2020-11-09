@@ -1,0 +1,24 @@
+{
+  "name": "merng",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "bcrypt": "^5.0.0",
+    "graphql": "^15.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.10.13"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

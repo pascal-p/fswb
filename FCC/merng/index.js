@@ -9,7 +9,8 @@ const { MONGODB } = require('./config');
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: ({ req }) => ({ req })  // forward that request, so that we can access the req body...
 });
 
 mongoose.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true  })

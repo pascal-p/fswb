@@ -31,14 +31,21 @@ function Home() {
 
 const FETCH_POSTS_QUERY = gql`
   {
-    getPosts{
-      id body username likeCount createdAt
+    getPosts {
+      id
+      body
+      username
+      likeCount
+      createdAt
       likes {
         username
       }
       commentCount
       comments {
-        id username createdAt body
+        id
+        username
+        createdAt
+        body
       }
     }
   }

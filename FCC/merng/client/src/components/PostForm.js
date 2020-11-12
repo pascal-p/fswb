@@ -49,8 +49,8 @@ function PostForm() {
           <ul className="list">
             <li>{error.graphQLErrors[0].message}</li>
           </ul>
-        </div>  
-      )} 
+        </div>
+      )}
     </>
   );
 }

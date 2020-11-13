@@ -18,6 +18,7 @@ function Home() {
       <Grid.Row className="page-title">
         <h1>Recent Posts</h1>
       </Grid.Row>
+
       <Grid.Row>
         { user && (
           <Grid.Column>

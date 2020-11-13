@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Button, Icon, Label } from 'semantic-ui-react';
 
+import YaPopup from './YaPopup';
 
 function LikeButton({user, post: { id, likes, likeCount }}) {
   const [liked, setLiked] = useState(false);
@@ -33,13 +34,15 @@ function LikeButton({user, post: { id, likes, likeCount }}) {
   );
 
   return (
-    <Button as='div' labelPosition='right' onClick={likePost}>
-      {likeBtn}
-
-      <Label basic color='teal' pointing='left'>
-        {likeCount}
-      </Label>
-    </Button>
+    <YaPopup content="Like"
+      trigger={
+        <Button as='div' labelPosition='right' onClick={likePost}>
+          {likeBtn}
+          <Label basic color='teal' pointing='left'>
+            {likeCount}
+          </Label>
+        </Button>
+      } />
   )
 }
 

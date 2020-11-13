@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Button, Confirm, Icon } from 'semantic-ui-react';
 
 import { FETCH_POSTS_QUERY } from '../utils/graphql';
+import YaPopup from './YaPopup';
 
 
 function DeleteButton({ postId, commentId, callback }) {
@@ -31,9 +32,12 @@ function DeleteButton({ postId, commentId, callback }) {
 
   return (
     <>
-      <Button as="div" color="red" size="tiny" floated="right" onClick={() => setConfirmOpen(true)}>
-        <Icon name="trash" style={{ margin: 0 }} />
-      </Button>
+      <YaPopup content={ commentId ? "Delete comment" : "Delete post" } inverted
+        trigger={
+          <Button as="div" color="red" size="tiny" floated="right" onClick={() => setConfirmOpen(true)}>
+            <Icon name="trash" style={{ margin: 0 }} />
+         </Button>
+        } />
       <Confirm open={confirmOpen} onCancel={() => setConfirmOpen(false)} onConfirm={deletePostOrComment}/>
     </>
   );

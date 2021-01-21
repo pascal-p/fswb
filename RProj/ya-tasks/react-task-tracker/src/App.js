@@ -23,7 +23,13 @@ const App = () => {
   const fetchTasks = async () => {
     const resp = await fetch(`${URL_SERVER}/tasks`);
     const data = await resp.json();
+    return data;
+  }
 
+  // Fetch a Task
+  const fetchTask = async (id) => {
+    const resp = await fetch(`${URL_SERVER}/tasks/${id}`);
+    const data = await resp.json();
     return data;
   }
 
@@ -38,7 +44,7 @@ const App = () => {
                                body: JSON.stringify(task)
                              });
     const data = await resp.json();
-    setTasks([...tasks, data])
+    setTasks([...tasks, data]);
   }
 
   // Delete a task
@@ -49,8 +55,21 @@ const App = () => {
   }
 
   // Toggle reminder
-  const toggleReminder = (id) => {
-    setTasks(tasks.map((t) => t.id === id ? {...t, reminder: !t.reminder} : t));
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id);
+    const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
+
+    const resp = await fetch(`${URL_SERVER}/tasks/${id}`,
+                             {
+                               method: 'PUT',
+                               headers: {
+                                 'Content-type': 'application/json'
+                               },
+                               body: JSON.stringify(updatedTask)
+                             });
+    const data = await resp.json();
+
+    setTasks(tasks.map((t) => t.id === id ? {...t, reminder: !data.reminder} : t));
   }
 
   return (

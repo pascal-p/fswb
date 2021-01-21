@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
 
+const URL_SERVER = 'http://localhost:5001';
+
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -13,18 +15,18 @@ const App = () => {
       const tasksFromServer = await fetchTasks();
       setTasks(tasksFromServer);
     }
-    
+
     getTasks();
   }, []);
 
   // Fetch Tasks
   const fetchTasks = async () => {
-    const resp = await fetch('http://localhost:5001/tasks');
+    const resp = await fetch(`${URL_SERVER}/tasks`);
     const data = await resp.json();
-    
+
     return data;
-  }  
-  
+  }
+
   // Add a task
   const addTask = (task) => {
     const id = Math.floor(Math.random() * 10000) + 1;
@@ -33,7 +35,9 @@ const App = () => {
   }
 
   // Delete a task
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    await fetch(`${URL_SERVER}/tasks/${id}`, { method: 'DELETE' });
+
     setTasks(tasks.filter((t) => t.id !== id));
   }
 
